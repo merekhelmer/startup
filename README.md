@@ -1,8 +1,8 @@
 # StreamSync
 Imagine planning a movie night with your friends or partner, but instead of burning 30 minutes scrolling through endless streaming libraries searching for the right pick, you can instantly get the perfect movie recommendation tailored to everyone's mood, genre preferences, and available streaming services in an instant. *StreamSync* is your personalized movie recommendation web app that uses your mood, time availability, and trending events to deliver the best suggestions in seconds, making sure your movie nights are always a hit!
 
-# Design 
-Here's a simple, rough draft design of the application
+## Design 
+Here's a simple, rough draft design of the application (I'll work on shrinking this pic down)
 ![Mock](streamsync.jpeg) 
 
 ## User Flow
