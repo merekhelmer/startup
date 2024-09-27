@@ -1,36 +1,41 @@
 # StreamSync
-Imagine planning a movie night with your friends or partner, but instead of burning 30 minutes scrolling through endless streaming libraries searching for the right pick, you can instantly get the perfect movie recommendation tailored to everyone's mood, genre preferences, and available streaming services in an instant. *StreamSync* is your personalized movie recommendation web app that uses your mood, time availability, and trending events to deliver the best suggestions in seconds, making sure your movie nights are always a hit!
+Have you ever spent more time looking for a movie than actually watching one? *StreamSync* revolutionizes your movie nights by bringing your group together to effortlessly choose the perfect film. Simply have each friend select their mood and pick their favorite genres. *StreamSync* instantly curates a list of top movie recommendations tailored to everyone's tastes. Then, with an interactive voting system, your group quickly decides on the movie that everyone will love. Turn the hassle of choosing a movie into a fun, collaborative experience with StreamSync, and make every movie night a hit!
 
 ## Design 
 Here's a simple, rough draft design of the application (I'll work on shrinking this pic down)
 ![Mock](streamsync.jpeg) 
 
-## User Flow
-1. User inputs their mood, time availability, and genre and clicks the "Find Movies" button 
-2. Client Application sends the request to the Server 
-3. Server processes the request and calls the public API to get relevant movie data 
-4. The API returns a list of movies to the Server 
-5. Server responds to the Client Application with the movie list 
-6. User views the movie list 
-7. (Potentially) The User chats with friends about movie choices via WebSockets
+## Application Flow
+- Group Session Initiation
+  - User creates a new group session and receives a unique code to share with friends to 
+- Preference Input
+  - Each group member inputs their mood using and selects prefered genres
+- Data Submission
+  - The client application sends all group members' preferences to the server
+- Recommendations
+  - The server processes the combined preferences and calls a public movie API to fetch a list of movies 
+- Movie List
+  - API returns a list of movies to the server
+  - Server responds to the client application with the curated movie list
+- Voting Process
+  - Group members view the recommended movies and vote for their top two choices
+- Vote Tallying
+  - The server collects all votes and tallies them
+- Final Selection Display
+  - Group's chosen movie is displayed and provides details such as synopsis, ratings, and streaming availability
 
 ## Technologies 
 #### HTML
-Structuring the web pages with proper HTML elements. The main page will allow users to select mood, genre, and time availability, while the result page will display movie suggestions. Another page will allow users to log in and manage profiles
+Structures the application with appropriate HTML pages for session creation/joining, preference input, combined movie recommendations and voting interface, and the final results display
 #### CSS
-Styling will ensure a responsive and user-friendly interface. CSS animations will enhance the user experience, especially for interactions like selecting moods and genres
+Provides responsive and visually appealing styling across different devices, including enhancements for user interactions like mood selection and voting
 #### React
-Components will handle mood selection, API calls, and rendering movie results. React Router will be used for navigation between different pages, such as the login and recommendation page
+Manages the user interface through components and state management, handling mood and genre inputs, displaying movie recommendations, enabling voting functionality, and navigation between different views 
 #### Service
-The backend will use `Node.js/Express` and make API calls to the API for fetching movie recommendations based on the user’s mood, genre, and time availability.
-#### API Endpoints
-- Retrieve movie genres
-- Get trending movies
-- Discover movies based on user input
+The backend will use `Node.js/Express` with endpoints for creating/joining sessions, collecting user preferences, retrieving movie recommendations, handling vote submissions, and providing the final selected movie
 #### DB/Login
-A database will store user data, including preferences, watch history, and login credentials
+Utilizes a database to store session data, user preferences, and votes securely
 #### WebSocket
-WebSockets can be implemented for real-time chat between users
-
+WebSockets to broadcast real-time updates of voting progress and results to all group members
 
 [View Notes](notes.md)
