@@ -38,4 +38,15 @@ Utilizes a database to store session data, user preferences, and votes securely
 #### WebSocket
 WebSockets to broadcast real-time updates of voting progress and results to all group members
 
+## HTML deliverable
+I built out the structure of my application, *StreamSync*, using HTML.
+
+- [x] **HTML pages** -  I created multiple HTML pages that represent the main components of the application, including `index.html` (home page with session creation/joining and preference input), `recommendations.html` (movie recommendations display and voting interface), `results.html` (final movie selection), and `login.html` (user authentication).
+- [x] **Links** - Each page contains navigation links to other pages for seamless user experience. The home page includes links to the login page and the GitHub repository.
+- [x] **Text** - All pages include headings, descriptions, and instructions to guide users through the application.
+- [ ] **Images** -  I incorporated a main image (Logo.jpg) throughout the application and will add more in the future 
+- [x] **DB/Login** - `login.html` includes input fields and a submit button for user login. There's also a placeholder for displaying data stored in the database, such as recent sessions in `index.html` and voting results in `results.html`.
+- [x] **WebSocket** - In `index.html`, the group status section will display real-time updates on which group members have submitted their preferences. In `recommendations.html`, the voting progress section will show real-time updates on votes submitted by group members.
+
+
 [View Notes](notes.md)
