@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <!-- Tell browsers not to scale the viewport automatically -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StreamSync - Home</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <header>
+        <img src="Logo.jpg" alt="StreamSync Logo" width="400" />
+
+        <h1>StreamSync</h1>
+        <nav>
+            <menu>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="https://github.com/merekhelmer/startup.git" target="_blank">GitHub Repository</a></li>
+            </menu>
+        </nav>
+        
+        <p>Welcome, Merek!</p>
+        <hr />
+    </header>
+
+    <main>
+        <!-- GitHub Link Section -->
+        <section id="github-link">
+            <h2>Check Out My GitHub Repository</h2>
+            <a href="https://github.com/merekhelmer/startup.git" target="_blank">
+                <button>View on GitHub</button>
+            </a>
+        </section>`
+
+        <!-- Session Creation/Joining -->
+        <section id="session-management">
+            <h2>Start Your Movie Night</h2>
+            <form id="session-form" method="post" action="#">
+                <div>
+                    <button type="submit" formaction="index.html">Create New Session</button>
+                </div>
+                <div>
+                    <label for="session-code">Or Join with a Session Code:</label>
+                    <input type="text" id="session-code" name="session-code" placeholder="Enter Session Code" required />
+                    <button type="submit" formaction="index.html">Join Session</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="preference-input">
+            <h2>Select Your Preferences</h2>
+            <form id="preferences-form" method="post" action="recommendations.html">
+                <!-- Mood Selection -->
+                <div>
+                    <h3>Your Mood:</h3>
+                    <!-- mood options with emojis or icons -->
+                    <label>
+                        <input type="radio" name="mood" value="happy" required />
+                        😊 Happy
+                    </label>
+                    <label>
+                        <input type="radio" name="mood" value="adventurous" />
+                        😔 Sad
+                    </label>
+                    <!-- Add more moods later -->
+                </div>
+
+                <!-- Genre Selection -->
+                <div>
+                    <h3>Preferred Genres:</h3>
+                    <label>
+                        <input type="checkbox" name="genre" value="action" />
+                        Action
+                    </label>
+                    <label>
+                        <input type="checkbox" name="genre" value="comedy" />
+                        Comedy
+                    </label>
+                    <!-- Add more genres as needed -->
+                </div>
+
+                <button type="submit">Submit Preferences</button>
+            </form>
+        </section>
+
+        <!-- WebSocket Data Placeholder -->
+        <section id="group-status">
+            <h2>Group Status</h2>
+            <!-- TODO: Implement real-time updates using WebSockets -->
+            <ul>
+                <li>User1 - Submitted Preferences</li>
+                <li>User2 - Waiting</li>
+                <!-- This list will be dynamically updated via WebSocket -->
+            </ul>
+        </section>
+
+        <!-- Database Placeholder -->
+        <section id="recent-sessions">
+            <h2>Recent Sessions</h2>
+            <!-- TODO: Fetch and display recent sessions from the database -->
+            <ul>
+                <li>Session ABC123 - Created by User1</li>
+                <li>Session XYZ789 - Created by User2</li>
+                <!-- Placeholder items -->
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <hr />
+        <p>&copy; 2023 StreamSync</p>
+        <!-- Added GitHub link in the footer -->
+        <p><a href="https://github.com/merekhelmer/startup.git" target="_blank">GitHub Repository</a></p>
+    </footer>
+</body>
+</html>
