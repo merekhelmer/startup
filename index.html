@@ -6,33 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>StreamSync - Home</title>
     <link rel="stylesheet" href="styles.css" />
+    <!-- Favicon -->
+    <link rel="icon" href="Logo.jpg" type="image/x-icon" />
 </head>
 <body>
     <header>
-        <img src="Logo.jpg" alt="StreamSync Logo" width="400" />
-
+        <!-- Application Logo -->
+        <img src="Logo.jpg" alt="StreamSync Logo" class="logo" width = 400/>
         <h1>StreamSync</h1>
-        <nav>
+        <nav aria-label="Main Navigation">
             <menu>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="login.html">Login</a></li>
                 <li><a href="https://github.com/merekhelmer/startup.git" target="_blank">GitHub Repository</a></li>
             </menu>
         </nav>
-        
+        <!-- User Name Display -->
+        <!-- TODO: Display logged-in user's name here -->
         <p>Welcome, Merek!</p>
         <hr />
     </header>
 
     <main>
-        <!-- GitHub Link Section -->
-        <section id="github-link">
-            <h2>Check Out My GitHub Repository</h2>
-            <a href="https://github.com/merekhelmer/startup.git" target="_blank">
-                <button>View on GitHub</button>
-            </a>
-        </section>`
-
         <!-- Session Creation/Joining -->
         <section id="session-management">
             <h2>Start Your Movie Night</h2>
@@ -42,42 +37,78 @@
                 </div>
                 <div>
                     <label for="session-code">Or Join with a Session Code:</label>
-                    <input type="text" id="session-code" name="session-code" placeholder="Enter Session Code" required />
+                    <input type="text" id="session-code" name="session-code" placeholder="e.g., ABC123" required />
                     <button type="submit" formaction="index.html">Join Session</button>
                 </div>
             </form>
         </section>
 
+        <!-- Preference Input -->
         <section id="preference-input">
             <h2>Select Your Preferences</h2>
             <form id="preferences-form" method="post" action="recommendations.html">
-                <!-- Mood Selection -->
+                <!-- Mood Selection with Emojis -->
                 <div>
                     <h3>Your Mood:</h3>
-                    <!-- mood options with emojis or icons -->
-                    <label>
-                        <input type="radio" name="mood" value="happy" required />
-                        😊 Happy
-                    </label>
-                    <label>
-                        <input type="radio" name="mood" value="adventurous" />
-                        😔 Sad
-                    </label>
-                    <!-- Add more moods later -->
+                    <div class="mood-options">
+                        <label>
+                            <input type="radio" name="mood" value="happy" required />
+                            <span class="emoji" role="img" aria-label="Happy">😊</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="mood" value="romantic" />
+                            <span class="emoji" role="img" aria-label="Romantic">❤️</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="mood" value="sad" />
+                            <span class="emoji" role="img" aria-label="Sad">😢</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="mood" value="excited" />
+                            <span class="emoji" role="img" aria-label="Excited">🎉</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="mood" value="scared" />
+                            <span class="emoji" role="img" aria-label="Scared">😱</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="mood" value="funny" />
+                            <span class="emoji" role="img" aria-label="Funny">😂</span>
+                        </label>
+                        <!-- Add more moods if needed -->
+                    </div>
                 </div>
 
                 <!-- Genre Selection -->
                 <div>
                     <h3>Preferred Genres:</h3>
-                    <label>
-                        <input type="checkbox" name="genre" value="action" />
-                        Action
-                    </label>
-                    <label>
-                        <input type="checkbox" name="genre" value="comedy" />
-                        Comedy
-                    </label>
-                    <!-- Add more genres as needed -->
+                    <div class="genre-options">
+                        <label>
+                            <input type="checkbox" name="genre" value="action" />
+                            Action
+                        </label>
+                        <label>
+                            <input type="checkbox" name="genre" value="comedy" />
+                            Comedy
+                        </label>
+                        <label>
+                            <input type="checkbox" name="genre" value="drama" />
+                            Drama
+                        </label>
+                        <label>
+                            <input type="checkbox" name="genre" value="horror" />
+                            Horror
+                        </label>
+                        <label>
+                            <input type="checkbox" name="genre" value="romance" />
+                            Romance
+                        </label>
+                        <label>
+                            <input type="checkbox" name="genre" value="sci-fi" />
+                            Sci-Fi
+                        </label>
+                        <!-- Add more genres as desired -->
+                    </div>
                 </div>
 
                 <button type="submit">Submit Preferences</button>
@@ -95,7 +126,7 @@
             </ul>
         </section>
 
-        <!-- Database Placeholder -->
+        <!-- Database Data Placeholder -->
         <section id="recent-sessions">
             <h2>Recent Sessions</h2>
             <!-- TODO: Fetch and display recent sessions from the database -->
@@ -110,7 +141,6 @@
     <footer>
         <hr />
         <p>&copy; 2023 StreamSync</p>
-        <!-- Added GitHub link in the footer -->
         <p><a href="https://github.com/merekhelmer/startup.git" target="_blank">GitHub Repository</a></p>
     </footer>
 </body>
