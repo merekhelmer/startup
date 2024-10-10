@@ -5,47 +5,48 @@
     <!-- Tell browsers not to scale the viewport automatically -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>StreamSync - Home</title>
-
-    <!-- Boostrap CSS -->
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="main.css" />
+    <!-- Include Bootstrap CSS Framework -->
     <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    crossorigin="anonymous"
-  />
-  <!--Custom Stylesheet-->
-  <link rel="stylesheet" href="main.css" />
-
-  <!--Favicon-->
-  <link rel="icon" href="Logo.jpg" type="image/x-icon" />
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous"
+    />
+    <!-- Favicon -->
+    <link rel="icon" href="Logo.jpg" type="image/x-icon" />
 </head>
 <body>
-
-    <!--Bootstrap navbar-->
-    <header
-        src="Logo.jpg" alt="StreamSync Logo" class="logo" width = 400
-        <h1>StreamSync</h1>
-        <nav aria-label="Main Navigation">
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="#" class="navbar-brand">
+                <img src="Logo.jpg" alt="StreamSync Logo" class="logo">
+                <span>StreamSync</span>
+            </a>
             <menu>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="login.html">Login</a></li>
                 <li><a href="https://github.com/merekhelmer/startup.git" target="_blank">GitHub Repository</a></li>
             </menu>
-        </nav> -->
+        </nav>
         <!-- User Name Display -->
         <!-- TODO: Display logged-in user's name here -->
-        <p>Welcome, Merek!</p>
+        <p class="welcome-message">Welcome, Merek!</p>
         <hr />
     </header>
 
+    <!-- Main Content -->
     <main>
-        <!-- Session Creation/Joining -->
-        <section id="session-management">
+         <!-- Session Creation/Joining -->
+         <section id="session-management">
             <h2>Start Your Movie Night</h2>
             <form id="session-form" method="post" action="#">
-                <div>
+                <div class="form-group">
                     <button type="submit" formaction="index.html">Create New Session</button>
                 </div>
-                <div>
+                <div class="form-group">
                     <label for="session-code">Or Join with a Session Code:</label>
                     <input type="text" id="session-code" name="session-code" placeholder="e.g., ABC123" required />
                     <button type="submit" formaction="index.html">Join Session</button>
@@ -58,100 +59,15 @@
             <h2>Select Your Preferences</h2>
             <form id="preferences-form" method="post" action="recommendations.html">
                 <!-- Mood Selection with Emojis -->
-                <div>
+                <div class="form-group">
                     <h3>Your Mood:</h3>
                     <div class="mood-options">
                         <label>
                             <input type="radio" name="mood" value="happy" required />
                             <span class="emoji" role="img" aria-label="Happy">😊</span>
                         </label>
-                        <label>
-                            <input type="radio" name="mood" value="romantic" />
-                            <span class="emoji" role="img" aria-label="Romantic">❤️</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="mood" value="sad" />
-                            <span class="emoji" role="img" aria-label="Sad">😢</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="mood" value="excited" />
-                            <span class="emoji" role="img" aria-label="Excited">🎉</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="mood" value="scared" />
-                            <span class="emoji" role="img" aria-label="Scared">😱</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="mood" value="funny" />
-                            <span class="emoji" role="img" aria-label="Funny">😂</span>
-                        </label>
-                        <!-- Add more moods if needed -->
+                        <!-- Add more moods as needed -->
                     </div>
                 </div>
 
-                <!-- Genre Selection -->
-                <div>
-                    <h3>Preferred Genres:</h3>
-                    <div class="genre-options">
-                        <label>
-                            <input type="checkbox" name="genre" value="action" />
-                            Action
-                        </label>
-                        <label>
-                            <input type="checkbox" name="genre" value="comedy" />
-                            Comedy
-                        </label>
-                        <label>
-                            <input type="checkbox" name="genre" value="drama" />
-                            Drama
-                        </label>
-                        <label>
-                            <input type="checkbox" name="genre" value="horror" />
-                            Horror
-                        </label>
-                        <label>
-                            <input type="checkbox" name="genre" value="romance" />
-                            Romance
-                        </label>
-                        <label>
-                            <input type="checkbox" name="genre" value="sci-fi" />
-                            Sci-Fi
-                        </label>
-                        <!-- Add more genres as desired -->
-                    </div>
-                </div>
-
-                <button type="submit">Submit Preferences</button>
-            </form>
-        </section>
-
-        <!-- WebSocket Data Placeholder -->
-        <section id="group-status">
-            <h2>Group Status</h2>
-            <!-- TODO: Implement real-time updates using WebSockets -->
-            <ul>
-                <li>User1 - Submitted Preferences</li>
-                <li>User2 - Waiting</li>
-                <!-- This list will be dynamically updated via WebSocket -->
-            </ul>
-        </section>
-
-        <!-- Database Data Placeholder -->
-        <section id="recent-sessions">
-            <h2>Recent Sessions</h2>
-            <!-- TODO: Fetch and display recent sessions from the database -->
-            <ul>
-                <li>Session ABC123 - Created by User1</li>
-                <li>Session XYZ789 - Created by User2</li>
-                <!-- Placeholder items -->
-            </ul>
-        </section>
     </main>
-
-    <footer>
-        <hr />
-        <p>&copy; 2023 StreamSync</p>
-        <p><a href="https://github.com/merekhelmer/startup.git" target="_blank">GitHub Repository</a></p>
-    </footer>
-</body>
-</html>
