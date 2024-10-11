@@ -76,9 +76,15 @@ header .logo {
     height: auto;
 }
 
+header menu li {
+    margin: 0 10px;
+    font-size: 1.2rem;
+    padding: 5px 10px;
+  }
+
 /* Hide the navigation menu on the login page */
 header nav {
-    display: none;
+    display: block;
 }
 
 /* Footer Styles Specific to Login Page */
@@ -95,8 +101,4 @@ footer p {
 
 footer a {
     color: #ccc;
-}
-
-footer a:hover {
-    text-decoration: underline;
 }
