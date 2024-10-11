@@ -24,6 +24,7 @@
     background-color: #333;
     color: #fff;
     padding: 10px 20px;
+    text-align: center;
   }
   
   header nav {
@@ -71,11 +72,10 @@
     margin-top: 10px;
     text-align: left;
   }
-  
-  .welcome-message{
+  welcome-message{
     text-decoration: none;
   }
-
+  
   /* Main content */
 main {
   flex: 1;
@@ -202,4 +202,57 @@ ul {
 
 li {
   margin-bottom: 10px;
+}
+
+/* Footer Styles */
+footer {
+  flex: 0 30px;
+  background-color: #333;
+  color: #ccc;
+  text-align: center;
+  padding: 15px 0;
+}
+
+footer p,
+footer a {
+  color: #ccc;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  header nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  header menu {
+    flex-direction: column;
+    margin-top: 10px;
+  }
+
+  header menu li {
+    margin: 5px 0;
+  }
+
+  .welcome-message {
+    text-align: left;
+  }
+}
+
+@media (max-height: 600px) {
+  header {
+    display: none;
+  }
+
+  footer {
+    display: none;
+  }
+
+  main {
+    flex: 1 100vh;
+  }
 }

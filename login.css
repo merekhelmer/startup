@@ -1,0 +1,102 @@
+/* login.css */
+
+/* center the login form */
+#authentication {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Style the form labels and inputs */
+#authentication .form-group {
+    margin-bottom: 15px;
+}
+
+#authentication label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#authentication input[type="email"],
+#authentication input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#authentication button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+#authentication button:hover {
+    background-color: #0056b3;
+    cursor: pointer;
+}
+
+/* 'Sign up here' link */
+#authentication p {
+    margin-top: 15px;
+    text-align: center;
+}
+
+#authentication p a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+#authentication p a:hover {
+    text-decoration: none;
+}
+
+/* Placeholder for login status messages */
+#login-status {
+    max-width: 400px;
+    margin: 20px auto;
+    text-align: center;
+    color: #ff0000; /* You can change the color as needed */
+}
+
+/* Adjust header for the login page */
+header {
+    padding: 20px;
+    text-align: center;
+    background-color: #333;
+}
+
+header .logo {
+    width: 100px;
+    height: auto;
+}
+
+/* Hide the navigation menu on the login page */
+header nav {
+    display: none;
+}
+
+/* Footer Styles Specific to Login Page */
+footer {
+    padding: 15px 0;
+    text-align: center;
+    background-color: #333;
+    color: #ccc;
+}
+
+footer p {
+    margin: 0;
+}
+
+footer a {
+    color: #ccc;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
