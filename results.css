@@ -1,38 +1,44 @@
 /* results.css */
 
-/* final selection */
+/* Final Movie Selection Container */
 #final-selection {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
     text-align: center;
+    background-color: #fff; 
+    border-radius: 5px;
 }
 
 #final-selection h2 {
     margin-bottom: 30px;
+    border-bottom: none; 
 }
 
 #final-selection h3 {
     margin-bottom: 20px;
+    font-size: 24px; /* ensures consistency */
 }
 
-/* movie details */
 #final-selection p {
     margin-bottom: 10px;
-    font-size: 1.1em;
+    font-size: 18px; 
     color: #333;
 }
 
-/* vote results */
+/* Vote Results*/
 #vote-results {
     max-width: 800px;
     margin: 40px auto;
     padding: 20px;
+    background-color: #fff; 
+    border-radius: 5px; 
 }
 
 #vote-results h2 {
-    text-align: center;
     margin-bottom: 30px;
+    border-bottom: none;
+    text-align: center;
 }
 
 #vote-results ul {
@@ -42,6 +48,6 @@
 
 #vote-results li {
     margin-bottom: 10px;
-    font-size: 1em;
+    font-size: 16px; 
     color: #333;
 }
