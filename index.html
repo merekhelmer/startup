@@ -5,9 +5,7 @@
     <!-- Tell browsers not to scale the viewport automatically -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>StreamSync - Home</title>
-    <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="styles.css" />
-    <!-- Include Bootstrap CSS Framework -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -19,21 +17,24 @@
 <body>
     <!-- Header -->
     <header>
-    <nav>
-        <a href="#" class="navbar-brand">
-            <img src="Logo.jpg" alt="StreamSync Logo" class="logo">
-            <span>StreamSync</span>
-            </a>
-            <menu>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="login.html">Login</a></li>
-                <li><a href="https://github.com/merekhelmer/startup.git" target="_blank">GitHub Repository</a></li>
-            </menu>
-        </nav>
-        <!-- User Name Display -->
-        <!-- TODO: Display logged-in user's name here -->
-        <p class="welcome-message">Welcome, Merek!</p>    
+        <div class="header-container">
+            <!-- Logo on the Left -->
+            <div class="logo-container">
+                <img src="Logo.jpg" alt="StreamSync Logo" class="logo">
+            </div>
+            
+            <h1 class="site-title">StreamSync</h1>
+            
+            <!-- Navigation Links on the Right -->
+            <nav>
+                <ul class="navigation">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="login.html">Login</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
+    
 
     <main>
         <!-- Session Creation/Joining -->

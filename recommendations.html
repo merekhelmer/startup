@@ -1,32 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Head content -->
     <meta charset="UTF-8" />
-    <!-- Tell browsers not to scale the viewport automatically -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>StreamSync - Recommendations</title>
     <link rel="stylesheet" href="styles.css" />
-    <!-- Link to the recommendations-specific stylesheet -->
     <link rel="stylesheet" href="recommendations.css" />
+    <link rel="icon" href="Logo.jpg" type="image/x-icon" />
 </head>
 <body>
+    <!-- Header -->
     <header>
-        <!-- Application Logo -->
-        <div class="header-content">
-            <img src="Logo.jpg" alt="StreamSync Logo" class="logo">
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="Logo.jpg" alt="StreamSync Logo" class="logo">
+            </div>
+            <h1 class="site-title">StreamSync</h1>
+            <nav>
+                <ul class="navigation">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <!-- Additional links if necessary -->
+                </ul>
+            </nav>
         </div>
-        <nav>
-            <menu>
-                <li><a href="index.html">Home</a></li>
-            </menu>
-        </nav>
     </header>
-
+    
+    <!-- Main Content -->
     <main>
         <!-- Movie Recommendations and Voting -->
         <section id="movie-recommendations">
             <h2>Recommended Movies</h2>
-            <!-- placeholder for movie list -->
+            <!-- Placeholder for movie list -->
             <form id="voting-form" method="post" action="#">
                 <div class="movie-item">
                     <h3>Movie Title 1</h3>
@@ -43,23 +49,21 @@
                         Select this movie
                     </label>
                 </div>
-                <!-- Add more movie items as needed -->
                 <button type="submit">Submit Vote</button>
             </form>
         </section>
-
+    
         <!-- Voting Results -->
         <section id="voting-results">
             <h2>Voting Results</h2>
             <!-- Placeholder for displaying the selected movie -->
-            <!-- This section will be updated after voting -->
             <div id="selected-movie">
-                <!-- populated after vote submission -->
                 <!-- TODO: Display the selected movie here -->
             </div>
         </section>
     </main>
-
+    
+    <!-- Footer -->
     <footer>
         <p>&copy; StreamSync</p>
     </footer>

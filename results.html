@@ -1,54 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Head content -->
     <meta charset="UTF-8" />
-    <!-- Tell browsers not to scale the viewport automatically -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>StreamSync - Final Selection</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="results.css" />
+    <link rel="icon" href="Logo.jpg" type="image/x-icon" />
 </head>
 <body>
+    <!-- Header -->
     <header>
-        <img src="Logo.jpg" alt="StreamSync Logo" width="400" />
-        <h1>StreamSync</h1>
-        <nav>
-            <menu>
-                <li><a href="index.html">Home</a></li>
-            </menu>
-        </nav>
-        <!-- User Name Display -->
-        <!-- TODO: Display logged-in user's name here -->
-        <p>Welcome, Merek!</p>
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="Logo.jpg" alt="StreamSync Logo" class="logo">
+            </div>
+            <h1 class="site-title">StreamSync</h1>
+            <nav>
+                <ul class="navigation">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <!-- Additional links if necessary -->
+                </ul>
+            </nav>
+        </div>
     </header>
-
+    
+    <!-- Main Content -->
     <main>
         <!-- Final Movie Selection -->
         <section id="final-selection">
             <h2>Your Group's Movie Choice</h2>
             <!-- TODO: Display the selected movie based on votes -->
             <h3>Movie Title Selected</h3>
-            <p>Summary of selected movie...</p>
+            <!-- Movie poster image -->
+            <img src="images/selected_movie_poster.jpg" alt="Selected Movie Poster" class="movie-poster" />
+            <p>Detailed synopsis of the selected movie...</p>
             <p><strong>Genre:</strong> Action, Adventure</p>
             <p><strong>Rating:</strong> 8.5/10</p>
             <p><strong>Streaming On:</strong> Netflix</p>
-           
         </section>
-
-        <!-- Database Data Placeholder -->
+    
+        <!-- Voting Results -->
         <section id="vote-results">
             <h2>Voting Results</h2>
             <!-- TODO: Fetch and display voting results from the database -->
             <ul>
                 <li>Movie Title 1 - 2 votes</li>
                 <li>Movie Title 2 - 3 votes</li>
-                <!-- display actual voting results -->
+                <!-- Display actual voting results -->
             </ul>
         </section>
     </main>
-
+    
+    <!-- Footer -->
     <footer>
         <p>&copy; StreamSync</p>
     </footer>
 </body>
 </html>
+
