@@ -33,6 +33,7 @@
         <!-- User Name Display -->
         <!-- TODO: Display logged-in user's name here -->
         <p class="welcome-message" style="text-decoration: none;">Welcome, Merek!</p>    
+        <hr />
     </header>
 
     <main>
@@ -40,10 +41,10 @@
         <section id="session-management">
             <h2>Start Your Movie Night</h2>
             <form id="session-form" method="post" action="#">
-                <div>
+                <div class="form-group">
                     <button type="submit" formaction="index.html">Create New Session</button>
                 </div>
-                <div>
+                <div class="form-group">
                     <label for="session-code">Or Join with a Session Code:</label>
                     <input type="text" id="session-code" name="session-code" placeholder="e.g., ABC123" required />
                     <button type="submit" formaction="index.html">Join Session</button>
@@ -88,7 +89,7 @@
                 </div>
 
                 <!-- Genre Selection -->
-                <div>
+                <div class="form-group">
                     <h3>Preferred Genres:</h3>
                     <div class="genre-options">
                         <label>
