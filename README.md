@@ -48,5 +48,21 @@ I built out the structure of my application, *StreamSync*, using HTML.
 - [x] **DB/Login** - `login.html` includes input fields and a submit button for user login. There's also a placeholder for displaying data stored in the database, such as recent sessions in `index.html` and voting results in `results.html`.
 - [x] **WebSocket** - In `index.html`, the group status section will display real-time updates on which group members have submitted their preferences. In `recommendations.html`, the voting progress section will show real-time updates on votes submitted by group members.
 
+## CSS deliverable
+- [x] **Header, Footer, and Main Content Body**
+- Designed a consistent header and footer that appear uniformly across all pages
+- The main content body is styled with appropriate padding and margins to ensure clear separation of content and improve readability
+- [x] **Navigation Elements**
+- Customized the navigation menu by removing default underlines and changing anchor colors to align with the application's color scheme
+- [x] **Responsive Design**
+- Utilized media queries to adjust layout and element sizes 
+- Ensure the application maintains its usability on different screen sizes
+- [x] **Application Elements**
+- Applied consistent styling to forms, buttons, and other interactive elements to provide better visuals and user interaction
+- [x] **Application Text Content**
+- Maintained consistent font families/sizes throughout the application
+- Enhanced readability by selecting appropriate font weights and line-heights
+- [x] **Application Images**
+- Use of image ("logo") in the page headers
 
 [View Notes](notes.md)
