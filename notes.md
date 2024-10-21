@@ -34,8 +34,6 @@ The GitLens extension for VS code is very helpful in visualizing the repository 
 }`
 - Box Model (from inside out): 
   - Content, Padding, Border, Margin
-  - Padding: Space inside the element's border
-  - Margin: Space outside the element's border
 - CSS Flexbox
 `.container {
   display: flex;
