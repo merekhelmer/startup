@@ -1,5 +1,6 @@
 // src/components/Home.jsx
 import React from 'react';
+import '../app.css';
 
 const Home = () => {
   return (
@@ -94,6 +95,7 @@ const Home = () => {
         <ul>
           <li>User1 - Submitted Preferences</li>
           <li>User2 - Waiting</li>
+          {/* This list will be dynamically updated via WebSocket in a real app */}
         </ul>
       </section>
 
@@ -103,6 +105,7 @@ const Home = () => {
         <ul>
           <li>Session ABC123 - Created by User1</li>
           <li>Session XYZ789 - Created by User2</li>
+          {/* Placeholder items */}
         </ul>
       </section>
     </main>

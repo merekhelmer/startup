@@ -23,7 +23,7 @@ function App() {
       <div className="body">
         <Header />
         <Routes>
-          <Route path="/" element={<Home />} exact />
+          <Route path="/home" element={<Home />} exact />
           <Route path="/login" element={<Login />} />
           <Route path="/recommendations" element={<Recommendations />} />
           <Route path="/results" element={<Results />} />
