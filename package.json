@@ -1,0 +1,17 @@
+{
+  "name": "startup",
+  "version": "1.0.0",
+  "description": "Have you ever spent more time looking for a movie than actually watching one? *StreamSync* revolutionizes your movie nights by bringing your group together to effortlessly choose the perfect film. Simply have each friend select their mood and pick their favorite genres. *StreamSync* instantly curates a list of top movie recommendations tailored to everyone's tastes. Then, with an interactive voting system, your group quickly decides on the movie that everyone will love. Turn the hassle of choosing a movie into a fun, collaborative experience with StreamSync, and make every movie night a hit!",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^5.4.10"
+  }
+}

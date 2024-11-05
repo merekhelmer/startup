@@ -12,7 +12,7 @@ html {
 }
 
 /* Body Styles */
-body {
+.body {
   display: flex;
   flex-direction: column;
   min-width: 375px;
