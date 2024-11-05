@@ -9,25 +9,19 @@ import Recommendations from './recommendations/Recommendations';
 import Results from './results/Results';
 import './app.css';
 
-function NotFound() {
-  return (
-    <main className="container-fluid bg-secondary text-center">
-      <div>404: Return to sender. Address unknown.</div>
-    </main>
-  );
-}
 
 function App() {
   return (
     <BrowserRouter>
       <div className="body">
         <Header />
+        <Home />
         <Routes>
           <Route path="/home" element={<Home />} exact />
           <Route path="/login" element={<Login />} />
           <Route path="/recommendations" element={<Recommendations />} />
           <Route path="/results" element={<Results />} />
-          <Route path="*" element={<NotFound />} />
+          {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>
         <Footer />
       </div>
@@ -36,3 +30,7 @@ function App() {
 }
 
 export default App;
+
+// function NotFound() {
+//   return <main className='container-fluid bg-secondary text-center'>404: Return to sender. Address unknown.</main>;
+// }
