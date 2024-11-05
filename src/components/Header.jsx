@@ -1,23 +1,30 @@
 // src/components/Header.js
+// src/components/Header.jsx
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 const Header = () => {
   return (
     <header>
       <div className="header-container">
-        {/* Logo on the Left */}
         <div className="logo-container">
           <img src="/Logo.jpg" alt="StreamSync Logo" className="logo" />
         </div>
-        
-        {/* Site Title */}
         <h1 className="site-title">StreamSync</h1>
-        
-        {/* Navigation Links on the Right */}
         <nav>
           <ul className="navigation">
-            <li><a href="/">Home</a></li>
-            <li><a href="/login">Login</a></li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/">Home</NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/login">Login</NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/recommendations">Recommendations</NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/results">Results</NavLink>
+            </li>
           </ul>
         </nav>
       </div>
