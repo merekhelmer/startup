@@ -15,7 +15,7 @@ function App() {
     <BrowserRouter>
       <div className="body">
         <Header />
-        {/* <Home /> */}
+        <Home />
         <Routes>
           <Route path="/home" element={<Home />} exact />
           <Route path="/login" element={<Login />} />
