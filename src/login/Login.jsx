@@ -1,32 +1,24 @@
 // src/login/Login.jsx
 import React from 'react';
-import './login.css';
+import Authenticated from './Authenticated';
+import Unauthenticated from './Unauthenticated';
+// import AuthState from '../auth/authState';
+// import '../app.css'; // Import the main CSS for shared styles
+import './login.css'
 
-const Login = () => {
+function Login({ userName, authState, onAuthChange }) {
   return (
-    <main>
-      <section id="authentication">
-        <h2>Login to Your Account</h2>
-        <form method="post" action="/">
-          <div>
-            <label htmlFor="email">Email:</label>
-            <input type="email" id="email" name="email" placeholder="you@example.com" required />
-          </div>
-          <div>
-            <label htmlFor="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="password" required />
-          </div>
-          <button type="submit">Login</button>
-          <p>Don't have an account? <a href="/signup">Sign up here</a>.</p>
-        </form>
-      </section>
-
-      <section id="login-status">
-        <p>Please enter your credentials to log in.</p>
-      </section>
+    <main className="login-container">
+      <h1 className="login-title">Welcome to StreamSync</h1>
+      {authState === AuthState.Authenticated ? (
+        <Authenticated userName={userName} onLogout={() => onAuthChange('', AuthState.Unauthenticated)} />
+      ) : (
+        <Unauthenticated onLogin={(newUserName) => onAuthChange(newUserName, AuthState.Authenticated)} />
+      )}
     </main>
   );
-};
+}
 
 export default Login;
+
 

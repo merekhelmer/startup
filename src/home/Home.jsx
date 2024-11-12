@@ -1,4 +1,3 @@
-// src/home/Home.jsx
 import React from 'react';
 import SessionManagement from './SessionManagement';
 import PreferenceSelection from './PreferenceSelection';
