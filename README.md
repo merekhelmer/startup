@@ -65,4 +65,23 @@ I built out the structure of my application, *StreamSync*, using HTML.
 - [x] **Application Images**
 - Use of image ("logo") in the page headers
 
+## React deliverable
+- [x] **Components**
+- Created modular React components for each page: `Login`, `Home`, `Recommendations`, and `Results`
+- Subcomponents for Login: `Authenticated` and `Unauthenticated` manage auth states dynamically
+- CSS styling applied for each component
+- [x] **Login**
+- The application begins at the login page by default
+- Successful login stores the username in localStorage and redirects the user to the Home page
+- [x] **Application Logic:**
+- Utilized React hooks like useState and useEffect to manage user state, authentication status, and component-specific logic
+- [x] **Router**
+- Implemented routing with `react-router-dom`
+- Protected routes ensure unauthenticated users are redirected to the login page
+- Navigation links integrated into the Header component
+- [x] **Database**
+- Mocked database functionality using localStorage for storing user authentication details 
+- [x] **Websocket**
+- WebSocket functionality is currently mocked with placeholders using setInterval to simulate dynamic data updates, will be replaced later
+  
 [View Notes](notes.md)
