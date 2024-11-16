@@ -1,21 +1,16 @@
 // src/login/Unauthenticated.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './login.css'; // Importing login-specific CSS
+import './login.css'; 
 
 function Unauthenticated({ onLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    if (email === 'user@example.com' && password === 'password') {
-      onLogin(email); // Calls onLogin with email as the userName
-      navigate('/home'); // Redirect to Home page after successful login
-    } else {
-      setError('Invalid credentials'); // Simple validation for demo
-    }
+    onLogin(email); 
+    navigate('/home'); // redirect to Home page after login
   };
 
   return (
@@ -28,7 +23,7 @@ function Unauthenticated({ onLogin }) {
           id="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
+          placeholder="Enter any email"
           required
         />
       </div>
@@ -39,14 +34,13 @@ function Unauthenticated({ onLogin }) {
           id="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="password"
+          placeholder="Enter any password"
           required
         />
       </div>
       <button onClick={handleLogin} disabled={!email || !password}>
         Login
       </button>
-      {error && <p id="login-status">{error}</p>}
       <p>
         Don’t have an account? <a href="/signup">Sign up here</a>.
       </p>
