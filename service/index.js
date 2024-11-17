@@ -13,6 +13,7 @@ const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
 // Middleware
 app.use(express.json());
+app.use(express.static('public'));
 
 // API Router
 const apiRouter = express.Router();
