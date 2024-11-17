@@ -71,6 +71,26 @@ apiRouter.post('/session/create', (req, res) => {
   
     res.send({ sessionCode });
   });
+
+
+// Join an existing session
+apiRouter.post('/session/join', (req, res) => {
+  const { sessionCode, userToken } = req.body;
+
+  const session = sessions[sessionCode];
+  if (!session) {
+    return res.status(404).send({ msg: 'Session not found' });
+  }
+
+  // validate user
+  const user = Object.values(users).find((u) => u.token === userToken);
+  if (!user) {
+    return res.status(401).send({ msg: 'Unauthorized' });
+  }
+
+  res.send({ msg: `Successfully joined session: ${sessionCode}` });
+});
+
   
 // Submit Preferences
 apiRouter.post('/session/preferences', (req, res) => {
