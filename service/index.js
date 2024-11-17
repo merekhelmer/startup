@@ -1,25 +1,22 @@
 // service/index.js
-import express from 'express';
-import { v4 as uuid } from 'uuid';
-
-const app = require('express');
+const express = require('express');
+const uuid = require('uuid');
 const app = express();
-const port = process.argv.length > 2 ? process.argv[2] : 4000;
-
-app.use(express.json());
-
-// Middleware
-app.use(express.json());
-app.use(express.static('public'));
-
-// API Router
-const apiRouter = express.Router();
-app.use('/api', apiRouter);
 
 // In-memory STORAGE
 let users = {};
 let sessions = {};
 let preferences = {};
+
+// Port
+const port = process.argv.length > 2 ? process.argv[2] : 4000;
+
+// Middleware
+app.use(express.json());
+
+// API Router
+const apiRouter = express.Router();
+app.use('/api', apiRouter);
 
 // ENDPOINTS //
 
@@ -27,12 +24,12 @@ let preferences = {};
 apiRouter.post('/auth/create', (req, res) => {
     const { email, password } = req.body;
   
-    // Check if the user already exists
+    // check if the user already exists
     if (users[email]) {
       return res.status(409).send({ msg: 'User already exists' });
     }
   
-    // Create new user
+    // create new user
     const user = { email, password, token: uuid.v4() };
     users[email] = user;
   
@@ -45,7 +42,7 @@ apiRouter.post('/auth/login', (req, res) => {
   
     const user = users[email];
     if (user && user.password === password) {
-      user.token = uuid.v4(); // Refresh token for this session
+      user.token = uuid.v4(); // refresh token for this session
       return res.send({ token: user.token });
     }
   
@@ -61,7 +58,7 @@ apiRouter.delete('/auth/logout', (req, res) => {
     res.status(204).end();
   });
 
-// Create a New Session
+/// Create a New Session
 apiRouter.post('/session/create', (req, res) => {
     const { userToken } = req.body;
   
@@ -73,9 +70,59 @@ apiRouter.post('/session/create', (req, res) => {
   
     res.send({ sessionCode });
   });
-
-// Serve static files
-app.use(express.static('public'));
+  
+// Submit Preferences
+apiRouter.post('/session/preferences', (req, res) => {
+    const { sessionCode, mood, genres } = req.body;
+  
+    const session = sessions[sessionCode];
+    if (!session) return res.status(404).send({ msg: 'Session not found' });
+  
+    session.preferences.push({ mood, genres });
+    res.send({ msg: 'Preferences saved' });
+  });
+  
+// Get Movie Recommendations
+apiRouter.get('/recommendations', async (_req, res) => {
+    try {
+      const response = await fetch('https://api.themoviedb.org/3/discover/movie', {
+        headers: {
+          Authorization: `Bearer YOUR_TMDB_API_KEY`, // Replace with your TMDB API key
+        },
+      });
+      const data = await response.json();
+      res.send(data.results);
+    } catch (error) {
+      console.error('Error fetching recommendations:', error);
+      res.status(500).send({ msg: 'Error fetching recommendations' });
+    }
+  });
+  
+// Submit Vote
+apiRouter.post('/vote', (req, res) => {
+    const { sessionCode, movieId } = req.body;
+  
+    const session = sessions[sessionCode];
+    if (!session) return res.status(404).send({ msg: 'Session not found' });
+  
+    session.votes[movieId] = (session.votes[movieId] || 0) + 1;
+  
+    res.send({ msg: 'Vote recorded' });
+  });
+  
+// Get Results
+apiRouter.get('/results/:sessionCode', (req, res) => {
+    const sessionCode = req.params.sessionCode;
+  
+    const session = sessions[sessionCode];
+    if (!session) return res.status(404).send({ msg: 'Session not found' });
+  
+    const sortedVotes = Object.entries(session.votes || {})
+      .sort(([, a], [, b]) => b - a)
+      .map(([movieId, votes]) => ({ movieId, votes }));
+  
+    res.send(sortedVotes);
+  });
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
