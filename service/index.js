@@ -84,20 +84,50 @@ apiRouter.post('/session/preferences', (req, res) => {
   });
   
 // Get Movie Recommendations
-apiRouter.get('/recommendations', async (_req, res) => {
-    try {
-      const response = await fetch('https://api.themoviedb.org/3/discover/movie', {
-        headers: {
-          Authorization: `Bearer YOUR_TMDB_API_KEY`, // Replace with your TMDB API key
-        },
-      });
-      const data = await response.json();
-      res.send(data.results);
-    } catch (error) {
-      console.error('Error fetching recommendations:', error);
-      res.status(500).send({ msg: 'Error fetching recommendations' });
-    }
+apiRouter.get('/recommendations/:sessionCode', async (req, res) => {
+  const sessionCode = req.params.sessionCode;
+  
+  // find session
+  const session = sessions[sessionCode];
+  if (!session) {
+    return res.status(404).send({ msg: 'Session not found' });
+  }
+
+  // extract preferences
+  const { preferences } = session;
+  if (!preferences || preferences.length === 0) {
+    return res.status(400).send({ msg: 'No preferences found for this session' });
+  }
+
+  // combine mood and genres 
+  const combinedGenres = new Set();
+  preferences.forEach((pref) => {
+    pref.genres.forEach((genre) => combinedGenres.add(genre));
   });
+  const genreIds = [...combinedGenres].join(',');
+
+  // TMDB API URL (edit for real query params later)
+  const tmdbApiUrl = `https://api.themoviedb.org/3/discover/movie?with_genres=${genreIds}&with_keywords=${moodKeywords}&sort_by=popularity.desc`;
+
+  try {
+    const response = await fetch(tmdbApiUrl, {
+      headers: {
+        Authorization: `Bearer ${process.env.TMDB_API_KEY}`, // replace with actual API key
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Error fetching recommendations');
+    }
+
+    const data = await response.json();
+    res.send(data.results);
+  } catch (error) {
+    console.error('Error fetching recommendations:', error);
+    res.status(500).send({ msg: 'Failed to fetch recommendations' });
+  }
+});
+
   
 // Submit Vote
 apiRouter.post('/vote', (req, res) => {
