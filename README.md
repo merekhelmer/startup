@@ -83,5 +83,26 @@ I built out the structure of my application, *StreamSync*, using HTML.
 - Mocked database functionality using localStorage for storing user authentication details 
 - [x] **Websocket**
 - WebSocket functionality is currently mocked with placeholders using setInterval to simulate dynamic data updates, will be replaced later
+
+## Service deliverable
+- [x] **Node.js/Express HTTP service**
+- Backend service is implemented using Node.js and Express
+- [x] **Static middleware for frontend**
+- The backend uses Express static middleware to serve the React frontend when deployed
+- [x] **Calls to third party endpoints**
+- Placeholder functionality is implemented for fetching movie recommendations
+- Real integration with The Movie Database (TMDB) API will be added in future deliverables
+- [x] **Backend service endpoints** 
+- `/api/auth/create` - Creates a new user and returns a unique token
+- `/api/auth/login` - Logs in an existing user and refreshes their token
+- `/api/auth/logout` - Logs out the user by invalidating their token
+- `/api/session/create` - Creates a new session for movie night with a unique code
+- `/api/session/preferences` - Submits user preferences (mood and genres) for the session
+- `/api/recommendations/:sessionCode` - Placeholder endpoint that returns mock movie recommendations
+- `/api/vote` - Records votes for a specific movie in a session
+- `/api/results/:sessionCode` - Fetches voting results for a given session, determining the top-voted movie
+- [x] **Frontend calls service endpoints** 
+- Frontend components use fetch to interact with the backend
+
   
 [View Notes](notes.md)
