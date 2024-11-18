@@ -105,6 +105,28 @@ apiRouter.post('/session/preferences', (req, res) => {
     res.send({ msg: 'Preferences saved' });
   });
   
+// Get session preferences by sessionCode
+apiRouter.get('/session/preferences/:sessionCode', (req, res) => {
+  const { sessionCode } = req.params;
+
+  // check if session exists
+  const session = sessions[sessionCode];
+  if (!session) {
+    return res.status(404).send({ msg: 'Session not found' });
+  }
+
+  // placeholder preferences and mock data
+  res.send({
+    mood: 'happy',
+    genres: ['comedy', 'action'],
+    movies: [
+      { id: '1', title: 'Placeholder Movie 1', vote_average: 8.2, release_date: '2023-01-01', poster_path: '/placeholder1.jpg' },
+      { id: '2', title: 'Placeholder Movie 2', vote_average: 7.8, release_date: '2022-11-15', poster_path: '/placeholder2.jpg' },
+    ],
+  });
+});
+
+
 // Get Movie Recommendations
 apiRouter.get('/recommendations/:sessionCode', async (req, res) => {
   const sessionCode = req.params.sessionCode;

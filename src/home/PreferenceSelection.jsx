@@ -35,7 +35,7 @@ const PreferenceSelection = ({ sessionCode }) => {
 
       if (response.ok) {
         alert('Preferences submitted successfully!');
-        navigate(`/recommendations?sessionCode=${sessionCode}`); // Redirect to Recommendations
+        navigate('/recommendations', { state: { sessionCode } });
       } else {
         const errorData = await response.json();
         console.error('Error submitting preferences:', errorData);
