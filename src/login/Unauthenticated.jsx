@@ -4,7 +4,7 @@ import { useState } from 'react';
 import './login.css';
 
 
-export function Unauthenticated({ onLogin }) {
+function Unauthenticated({ onLogin }) {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [displayError, setDisplayError] = useState(null);
@@ -67,3 +67,5 @@ export function Unauthenticated({ onLogin }) {
     </div>
   );
 }
+
+export default Unauthenticated;
