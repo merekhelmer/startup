@@ -1,22 +1,36 @@
-// src/home/StatusDisplay.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const StatusDisplay = () => {
-  const [groupStatus, setGroupStatus] = useState([]);
-  const [recentSessions, setRecentSessions] = useState([]);
+const StatusDisplay = ({ sessionCode }) => {
+  const [status, setStatus] = useState([]);
 
   useEffect(() => {
-    //mock data 
-    setGroupStatus([{ name: "User1", status: "Submitted Preferences" }, { name: "User2", status: "Waiting" }]);
-    setRecentSessions([{ code: "ABC123", creator: "User1" }, { code: "XYZ789", creator: "User2" }]);
-  }, []);
+    const fetchStatus = async () => {
+      try {
+        const response = await fetch(`/api/results/${sessionCode}`);
+        if (response.ok) {
+          const data = await response.json();
+          setStatus(data);
+        } else {
+          console.error('Failed to fetch status');
+        }
+      } catch (error) {
+        console.error('Error fetching status:', error);
+      }
+    };
+
+    fetchStatus();
+  }, [sessionCode]);
 
   return (
     <section>
       <h2>Group Status</h2>
-      <ul>{groupStatus.map((user, index) => <li key={index}>{user.name} - {user.status}</li>)}</ul>
-      <h2>Recent Sessions</h2>
-      <ul>{recentSessions.map((session, index) => <li key={index}>{session.code} - Created by {session.creator}</li>)}</ul>
+      <ul>
+        {status.map((item) => (
+          <li key={item.movieId}>
+            Movie ID: {item.movieId}, Votes: {item.votes}
+          </li>
+        ))}
+      </ul>
     </section>
   );
 };

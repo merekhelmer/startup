@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 const PreferenceSelection = () => {
   const [mood, setMood] = useState('');
   const [genres, setGenres] = useState([]);
-  const [sessionCode, setSessionCode] = useState(''); 
+  const [sessionCode, setSessionCode] = useState('');
 
   const handleSubmitPreferences = async (e) => {
     e.preventDefault();
@@ -21,6 +21,8 @@ const PreferenceSelection = () => {
 
       if (response.ok) {
         alert('Preferences submitted successfully!');
+        setMood(''); // Reset mood
+        setGenres([]); // Reset genres
       } else {
         const errorData = await response.json();
         console.error('Error submitting preferences:', errorData);

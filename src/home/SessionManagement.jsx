@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const SessionManagement = () => {
   const [sessionCode, setSessionCode] = useState('');
-  const [userToken, setUserToken] = useState(localStorage.getItem('userToken') || '');
+  const userToken = localStorage.getItem('userToken'); // Assume token is managed globally
 
   const handleSessionCreate = async () => {
     try {
@@ -15,6 +15,7 @@ const SessionManagement = () => {
       if (response.ok) {
         const data = await response.json();
         alert(`Session created! Your code is: ${data.sessionCode}`);
+        setSessionCode(data.sessionCode); // Automatically set session code
       } else {
         alert('Failed to create session. Please try again.');
       }
@@ -26,14 +27,14 @@ const SessionManagement = () => {
 
   const handleSessionJoin = async (e) => {
     e.preventDefault();
-  
+
     try {
       const response = await fetch('/api/session/join', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sessionCode, userToken }),
       });
-  
+
       if (response.ok) {
         alert(`Successfully joined session: ${sessionCode}`);
       } else {
@@ -45,7 +46,6 @@ const SessionManagement = () => {
       alert('An error occurred while trying to join the session.');
     }
   };
-  
 
   return (
     <section>
