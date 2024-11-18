@@ -104,75 +104,28 @@ apiRouter.post('/session/preferences', (req, res) => {
     session.preferences.push({ mood, genres });
     res.send({ msg: 'Preferences saved' });
   });
-  
-// Get session preferences by sessionCode
-apiRouter.get('/session/preferences/:sessionCode', (req, res) => {
-  const { sessionCode } = req.params;
-
-  // check if session exists
-  const session = sessions[sessionCode];
-  if (!session) {
-    return res.status(404).send({ msg: 'Session not found' });
-  }
-
-  // placeholder preferences and mock data
-  res.send({
-    mood: 'happy',
-    genres: ['comedy', 'action'],
-    movies: [
-      { id: '1', title: 'Placeholder Movie 1', vote_average: 8.2, release_date: '2023-01-01', poster_path: '/placeholder1.jpg' },
-      { id: '2', title: 'Placeholder Movie 2', vote_average: 7.8, release_date: '2022-11-15', poster_path: '/placeholder2.jpg' },
-    ],
-  });
-});
 
 
 // Get Movie Recommendations
-apiRouter.get('/recommendations/:sessionCode', async (req, res) => {
-  const sessionCode = req.params.sessionCode;
-  
-  // find session
+// mock data for recommendations
+const mockMovies = [
+  { id: 1, title: "Movie 1", vote_average: 8.5, release_date: "2021-05-15" },
+  { id: 2, title: "Movie 2", vote_average: 7.8, release_date: "2020-10-30" },
+  { id: 3, title: "Movie 3", vote_average: 9.1, release_date: "2019-08-20" },
+];
+
+apiRouter.get('/recommendations/:sessionCode', (req, res) => {
+  const { sessionCode } = req.params;
+
   const session = sessions[sessionCode];
   if (!session) {
     return res.status(404).send({ msg: 'Session not found' });
   }
 
-  // extract preferences
-  const { preferences } = session;
-  if (!preferences || preferences.length === 0) {
-    return res.status(400).send({ msg: 'No preferences found for this session' });
-  }
-
-  // combine mood and genres 
-  const combinedGenres = new Set();
-  preferences.forEach((pref) => {
-    pref.genres.forEach((genre) => combinedGenres.add(genre));
-  });
-  const genreIds = [...combinedGenres].join(',');
-
-  // TMDB API URL (edit for real query params later)
-  const tmdbApiUrl = `https://api.themoviedb.org/3/discover/movie?with_genres=${genreIds}&with_keywords=${moodKeywords}&sort_by=popularity.desc`;
-
-  try {
-    const response = await fetch(tmdbApiUrl, {
-      headers: {
-        Authorization: `Bearer ${process.env.TMDB_API_KEY}`, // replace with actual API key
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Error fetching recommendations');
-    }
-
-    const data = await response.json();
-    res.send(data.results);
-  } catch (error) {
-    console.error('Error fetching recommendations:', error);
-    res.status(500).send({ msg: 'Failed to fetch recommendations' });
-  }
+  // return mock movie recommendations
+  res.send({ movies: mockMovies });
 });
 
-  
 // Submit Vote
 apiRouter.post('/vote', (req, res) => {
     const { sessionCode, movieId } = req.body;
