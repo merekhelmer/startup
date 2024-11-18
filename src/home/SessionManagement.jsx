@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-const SessionManagement = () => {
-  const [sessionCode, setSessionCode] = useState('');
-  const userToken = localStorage.getItem('userToken'); // Assume token is managed globally
+const SessionManagement = ({ setSessionCode }) => {
+  const [sessionCode, setLocalSessionCode] = useState('');
+  const [userToken] = useState(localStorage.getItem('userToken') || '');
 
   const handleSessionCreate = async () => {
     try {
@@ -14,8 +14,8 @@ const SessionManagement = () => {
 
       if (response.ok) {
         const data = await response.json();
+        setSessionCode(data.sessionCode); // pass session code to parent
         alert(`Session created! Your code is: ${data.sessionCode}`);
-        setSessionCode(data.sessionCode); // Automatically set session code
       } else {
         alert('Failed to create session. Please try again.');
       }
@@ -28,6 +28,11 @@ const SessionManagement = () => {
   const handleSessionJoin = async (e) => {
     e.preventDefault();
 
+    if (!sessionCode) {
+      alert('Please enter a valid session code.');
+      return;
+    }
+
     try {
       const response = await fetch('/api/session/join', {
         method: 'POST',
@@ -36,6 +41,7 @@ const SessionManagement = () => {
       });
 
       if (response.ok) {
+        setSessionCode(sessionCode); // pass session code to parent
         alert(`Successfully joined session: ${sessionCode}`);
       } else {
         const errorData = await response.json();
@@ -55,7 +61,7 @@ const SessionManagement = () => {
         <input
           type="text"
           value={sessionCode}
-          onChange={(e) => setSessionCode(e.target.value)}
+          onChange={(e) => setLocalSessionCode(e.target.value)}
           placeholder="Enter Session Code"
           required
         />

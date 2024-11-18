@@ -28,22 +28,30 @@ function App() {
     <BrowserRouter>
       <div className="body">
         <Header />
-        
         <Routes>
-          {/* redirect to login by default */}
-          <Route
-            path="/"
-            element={authState === AuthState.Authenticated ? <Navigate to="/home" /> : <Navigate to="/login" />}
-          />
+          {/* Default redirection */}
+          <Route path="/" element={<Navigate to={authState === AuthState.Authenticated ? "/home" : "/login"} replace />} />
+          
+          {/* Login Route */}
           <Route
             path="/login"
             element={<Login userName={userName} authState={authState} onAuthChange={handleAuthChange} />}
           />
-          <Route path="/home" element={authState === AuthState.Authenticated ? <Home /> : <Navigate to="/login" />} />
-          <Route path="/recommendations" element={authState === AuthState.Authenticated ? <Recommendations /> : <Navigate to="/login" />} />
-          <Route path="/results" element={authState === AuthState.Authenticated ? <Results /> : <Navigate to="/login" />} />
+
+          {/* Protected Routes with inline checks */}
+          <Route
+            path="/home"
+            element={authState === AuthState.Authenticated ? <Home /> : <Navigate to="/login" replace />}
+          />
+          <Route
+            path="/recommendations"
+            element={authState === AuthState.Authenticated ? <Recommendations /> : <Navigate to="/login" replace />}
+          />
+          <Route
+            path="/results"
+            element={authState === AuthState.Authenticated ? <Results /> : <Navigate to="/login" replace />}
+          />
         </Routes>
-        
         <Footer />
       </div>
     </BrowserRouter>

@@ -68,6 +68,8 @@ apiRouter.post('/session/create', (req, res) => {
   
     const sessionCode = Math.random().toString(36).substring(2, 8).toUpperCase();
     sessions[sessionCode] = { creator: user.email, preferences: [], votes: {} };
+    console.log('Sessions:', sessions);
+
   
     res.send({ sessionCode });
   });

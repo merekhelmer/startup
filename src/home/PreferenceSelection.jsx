@@ -1,12 +1,26 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const PreferenceSelection = () => {
+const PreferenceSelection = ({ sessionCode }) => {
   const [mood, setMood] = useState('');
   const [genres, setGenres] = useState([]);
-  const [sessionCode, setSessionCode] = useState('');
+  const navigate = useNavigate();
+
+  const toggleGenre = (genre) => {
+    setGenres((prevGenres) =>
+      prevGenres.includes(genre)
+        ? prevGenres.filter((g) => g !== genre)
+        : [...prevGenres, genre]
+    );
+  };
 
   const handleSubmitPreferences = async (e) => {
     e.preventDefault();
+
+    if (!sessionCode) {
+      alert('No session code found. Please create or join a session.');
+      return;
+    }
 
     try {
       const response = await fetch('/api/session/preferences', {
@@ -21,8 +35,7 @@ const PreferenceSelection = () => {
 
       if (response.ok) {
         alert('Preferences submitted successfully!');
-        setMood(''); // Reset mood
-        setGenres([]); // Reset genres
+        navigate(`/recommendations?sessionCode=${sessionCode}`); // Redirect to Recommendations
       } else {
         const errorData = await response.json();
         console.error('Error submitting preferences:', errorData);
@@ -32,12 +45,6 @@ const PreferenceSelection = () => {
       console.error('Error:', error);
       alert('An error occurred. Please try again.');
     }
-  };
-
-  const toggleGenre = (genre) => {
-    setGenres((prevGenres) =>
-      prevGenres.includes(genre) ? prevGenres.filter((g) => g !== genre) : [...prevGenres, genre]
-    );
   };
 
   return (

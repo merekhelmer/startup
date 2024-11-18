@@ -1,25 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
-const StatusDisplay = ({ sessionCode }) => {
+const StatusDisplay = () => {
   const [status, setStatus] = useState([]);
 
   useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        const response = await fetch(`/api/results/${sessionCode}`);
-        if (response.ok) {
-          const data = await response.json();
-          setStatus(data);
-        } else {
-          console.error('Failed to fetch status');
-        }
-      } catch (error) {
-        console.error('Error fetching status:', error);
-      }
-    };
-
-    fetchStatus();
-  }, [sessionCode]);
+    // Fetch status data here and update state
+    // Example: setStatus(fetchedData);
+  }, []);
 
   return (
     <section>
