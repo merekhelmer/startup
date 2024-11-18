@@ -7,7 +7,7 @@ import Home from './home/Home';
 import Login from './login/Login';
 import Recommendations from './recommendations/Recommendations';
 import Results from './results/Results';
-import AuthState from './auth/AuthState';
+import AuthState from './auth/authState';
 import './app.css';
 
 function App() {

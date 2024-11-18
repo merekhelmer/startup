@@ -1,44 +1,42 @@
-import React, { useState } from 'react';
+import React from 'react';
+import Button from 'react-bootstrap/Button';
+import { useState } from 'react';
 import './login.css';
 
+
 export function Unauthenticated({ onLogin }) {
-  const [email, setEmail] = useState('');
+  const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
+  const [displayError, setDisplayError] = useState(null);
 
-  async function handleLogin(endpoint) {
-    try {
-      const response = await fetch(`/api/auth/${endpoint}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+  async function loginOrCreate(endpoint) {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: userName, password }),
+    });
 
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('userToken', data.token);
-        onLogin(email); // parent component in login
-      } else {
-        const errorData = await response.json();
-        setError(`⚠️ ${errorData.msg}`);
-      }
-    } catch (err) {
-      console.error(err);
-      setError('Network error');
+    if (response.status === 200) {
+      const { token } = await response.json();
+      localStorage.setItem('userToken', token); // save token for authenticated requests
+      onLogin(userName);
+    } else {
+      const body = await response.json();
+      setDisplayError(`⚠ Error: ${body.msg}`);
     }
   }
 
   return (
-    <div id="authentication">
-      <h2>Login or Create an Account</h2>
-      {error && <p className="error">{error}</p>}
+    <div>
       <div className="form-group">
         <label>Email:</label>
         <input
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Enter your email"
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+          placeholder="you@example.com"
         />
       </div>
       <div className="form-group">
@@ -47,11 +45,25 @@ export function Unauthenticated({ onLogin }) {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Enter your password"
+          placeholder="password"
         />
       </div>
-      <button onClick={() => handleLogin('login')}>Login</button>
-      <button onClick={() => handleLogin('create')}>Create Account</button>
+      <Button
+        variant="primary"
+        onClick={() => loginOrCreate('/api/auth/login')}
+        disabled={!userName || !password}
+      >
+        Login
+      </Button>
+      <Button
+        variant="secondary"
+        onClick={() => loginOrCreate('/api/auth/create')}
+        disabled={!userName || !password}
+      >
+        Create Account
+      </Button>
+
+      {displayError && <div className="error">{displayError}</div>}
     </div>
   );
 }
