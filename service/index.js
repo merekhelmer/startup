@@ -2,6 +2,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const DB = require('./database.js'); // import database functions
 const uuid = require('uuid');
+const {mockMovies} = require('./mockData.js');
 
 const app = express();
 const authCookieName = 'token';
@@ -83,24 +84,24 @@ secureApiRouter.post('/session/preferences', async (req, res) => {
   res.send({ msg: 'Preferences saved' });
 });
 
-// RECOMMENDATIONS ENDPOINTS
-secureApiRouter.get('/recommendations/:sessionCode', async (req, res) => {
+
+apiRouter.get('/recommendations/:sessionCode', async (req, res) => {
   const { sessionCode } = req.params;
-  const session = await DB.getSession(sessionCode);
 
-  if (!session) {
-    return res.status(404).send({ msg: 'Session not found' });
+  try {
+    const session = await DB.getSession(sessionCode);
+    if (!session) {
+      return res.status(404).send({ msg: 'Session not found' });
+    }
+
+    res.send({ movies: mockMovies });
+  } catch (error) {
+    console.error('Error fetching recommendations:', error);
+    res.status(500).send({ msg: 'Internal Server Error' });
   }
-
-  // Return mock movies or integrate with a third-party API
-  res.send({
-    movies: [
-      { id: 1, title: 'Inception', vote_average: 8.8, release_date: '2010-07-16' },
-      { id: 2, title: 'The Matrix', vote_average: 8.7, release_date: '1999-03-31' },
-      { id: 3, title: 'Interstellar', vote_average: 8.6, release_date: '2014-11-07' },
-    ],
-  });
 });
+
+
 
 // VOTE ENDPOINTS
 secureApiRouter.post('/vote', async (req, res) => {
