@@ -65,52 +65,23 @@ apiRouter.delete('/auth/logout', (req, res) => {
   res.status(204).end();
 });
 
-/// Create a New Session
-apiRouter.post('/session/create', (req, res) => {
-    const { userToken } = req.body;
-  
-    const user = Object.values(users).find((u) => u.token === userToken);
-    if (!user) return res.status(401).send({ msg: 'Unauthorized' });
-  
-    const sessionCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-    sessions[sessionCode] = { creator: user.email, preferences: [], votes: {} };
-    console.log('Sessions:', sessions);
+// SESSION ENDPOINTS
+secureApiRouter.post('/session/create', async (req, res) => {
+  const session = await DB.createSession(req.user.email);
+  res.send({ sessionCode: session.sessionCode });
+});
 
-  
-    res.send({ sessionCode });
-  });
+secureApiRouter.post('/session/preferences', async (req, res) => {
+  const { sessionCode, mood, genres } = req.body;
+  const session = await DB.getSession(sessionCode);
 
-
-// Join an existing session
-apiRouter.post('/session/join', (req, res) => {
-  const { sessionCode, userToken } = req.body;
-
-  const session = sessions[sessionCode];
   if (!session) {
     return res.status(404).send({ msg: 'Session not found' });
   }
 
-  // validate user
-  const user = Object.values(users).find((u) => u.token === userToken);
-  if (!user) {
-    return res.status(401).send({ msg: 'Unauthorized' });
-  }
-
-  res.send({ msg: `Successfully joined session: ${sessionCode}` });
+  await DB.addPreferencesToSession(sessionCode, { mood, genres });
+  res.send({ msg: 'Preferences saved' });
 });
-
-  
-// Submit Preferences
-apiRouter.post('/session/preferences', (req, res) => {
-    const { sessionCode, mood, genres } = req.body;
-  
-    const session = sessions[sessionCode];
-    if (!session) return res.status(404).send({ msg: 'Session not found' });
-  
-    session.preferences.push({ mood, genres });
-    res.send({ msg: 'Preferences saved' });
-  });
-
 
 // Get Movie Recommendations
 // mock data for recommendations
