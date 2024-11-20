@@ -6,16 +6,31 @@ const uuid = require('uuid');
 const app = express();
 const authCookieName = 'token';
 
-// Port
-const port = process.argv.length > 2 ? process.argv[2] : 4000;
-
-// Middleware
+// middleware
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.static('public'));
+
+// port
+const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
 // API Router
 const apiRouter = express.Router();
 app.use('/api', apiRouter);
+
+const secureApiRouter = express.Router();
+apiRouter.use(secureApiRouter);
+
+secureApiRouter.use(async (req, res, next) => {
+  const authToken = req.cookies[authCookieName];
+  const user = await DB.getUserByToken(authToken);
+  if (user) {
+    req.user = user;
+    next();
+  } else {
+    res.status(401).send({ msg: 'Unauthorized' });
+  }
+});
 
 // ENDPOINTS //
 
