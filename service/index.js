@@ -32,45 +32,38 @@ secureApiRouter.use(async (req, res, next) => {
   }
 });
 
-// ENDPOINTS //
 
-//Create a new user
-apiRouter.post('/auth/create', (req, res) => {
-    const { email, password } = req.body;
-  
-    // check if the user already exists
-    if (users[email]) {
-      return res.status(409).send({ msg: 'User already exists' });
-    }
-  
-    // create new user
-    const user = { email, password, token: uuid.v4() };
-    users[email] = user;
-  
-    res.send({ token: user.token });
-  });
+// AUTH ENDPOINTS
+apiRouter.post('/auth/create', async (req, res) => {
+  const { email, password } = req.body;
 
-// Login an existing user
-apiRouter.post('/auth/login', (req, res) => {
-    const { email, password } = req.body;
-  
-    const user = users[email];
-    if (user && user.password === password) {
-      user.token = uuid.v4(); // refresh token for this session
-      return res.send({ token: user.token });
-    }
-  
-    res.status(401).send({ msg: 'Invalid email or password' });
-  });
+  if (await DB.getUser(email)) {
+    return res.status(409).send({ msg: 'User already exists' });
+  }
 
-// Logout a user
+  const user = await DB.createUser(email, password);
+  setAuthCookie(res, user.token);
+  res.send({ msg: 'User created successfully' });
+});
+
+apiRouter.post('/auth/login', async (req, res) => {
+  const { email, password } = req.body;
+  const user = await DB.getUser(email);
+
+  if (user && (await bcrypt.compare(password, user.password))) {
+    const token = uuid.v4();
+    await DB.updateUserToken(email, token);
+    setAuthCookie(res, token);
+    return res.send({ msg: 'Login successful' });
+  }
+
+  res.status(401).send({ msg: 'Invalid email or password' });
+});
+
 apiRouter.delete('/auth/logout', (req, res) => {
-    const user = Object.values(users).find((u) => u.token === req.body.token);
-    if (user) {
-      delete user.token;
-    }
-    res.status(204).end();
-  });
+  res.clearCookie(authCookieName);
+  res.status(204).end();
+});
 
 /// Create a New Session
 apiRouter.post('/session/create', (req, res) => {
