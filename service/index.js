@@ -1,12 +1,10 @@
-// service/index.js
 const express = require('express');
+const cookieParser = require('cookie-parser');
+const DB = require('./database.js'); // import database functions
 const uuid = require('uuid');
-const app = express();
 
-// In-memory STORAGE
-let users = {};
-let sessions = {};
-let preferences = {};
+const app = express();
+const authCookieName = 'token';
 
 // Port
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
