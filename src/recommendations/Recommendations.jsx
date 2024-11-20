@@ -54,7 +54,7 @@ const Recommendations = () => {
 
       if (response.ok) {
         alert('Your vote has been recorded!');
-        navigate('/results', { state: { sessionCode } }); // Redirect to Results page
+        navigate('/results', { state: { sessionCode } }); // redirect to Results page
       } else {
         const errorData = await response.json();
         console.error('Error submitting vote:', errorData);

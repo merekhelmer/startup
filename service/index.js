@@ -83,52 +83,64 @@ secureApiRouter.post('/session/preferences', async (req, res) => {
   res.send({ msg: 'Preferences saved' });
 });
 
-// Get Movie Recommendations
-// mock data for recommendations
-const mockMovies = [
-  { id: 1, title: "Movie 1", vote_average: 8.5, release_date: "2021-05-15" },
-  { id: 2, title: "Movie 2", vote_average: 7.8, release_date: "2020-10-30" },
-  { id: 3, title: "Movie 3", vote_average: 9.1, release_date: "2019-08-20" },
-];
-
-apiRouter.get('/recommendations/:sessionCode', (req, res) => {
+// RECOMMENDATIONS ENDPOINTS
+secureApiRouter.get('/recommendations/:sessionCode', async (req, res) => {
   const { sessionCode } = req.params;
+  const session = await DB.getSession(sessionCode);
 
-  const session = sessions[sessionCode];
   if (!session) {
     return res.status(404).send({ msg: 'Session not found' });
   }
 
-  // return mock movie recommendations
-  res.send({ movies: mockMovies });
+  // Return mock movies or integrate with a third-party API
+  res.send({
+    movies: [
+      { id: 1, title: 'Inception', vote_average: 8.8, release_date: '2010-07-16' },
+      { id: 2, title: 'The Matrix', vote_average: 8.7, release_date: '1999-03-31' },
+      { id: 3, title: 'Interstellar', vote_average: 8.6, release_date: '2014-11-07' },
+    ],
+  });
 });
 
-// Submit Vote
-apiRouter.post('/vote', (req, res) => {
-    const { sessionCode, movieId } = req.body;
-  
-    const session = sessions[sessionCode];
-    if (!session) return res.status(404).send({ msg: 'Session not found' });
-  
-    session.votes[movieId] = (session.votes[movieId] || 0) + 1;
-  
-    res.send({ msg: 'Vote recorded' });
-  });
-  
-// Get Results
-apiRouter.get('/results/:sessionCode', (req, res) => {
-    const sessionCode = req.params.sessionCode;
-  
-    const session = sessions[sessionCode];
-    if (!session) return res.status(404).send({ msg: 'Session not found' });
-  
-    const sortedVotes = Object.entries(session.votes || {})
-      .sort(([, a], [, b]) => b - a)
-      .map(([movieId, votes]) => ({ movieId, votes }));
-  
-    res.send(sortedVotes);
-  });
+// VOTE ENDPOINTS
+secureApiRouter.post('/vote', async (req, res) => {
+  const { sessionCode, movieId } = req.body;
+  const session = await DB.getSession(sessionCode);
 
+  if (!session) {
+    return res.status(404).send({ msg: 'Session not found' });
+  }
+
+  await DB.addVote(sessionCode, movieId);
+  res.send({ msg: 'Vote recorded' });
+});
+
+// RESULTS ENDPOINTS
+secureApiRouter.get('/results/:sessionCode', async (req, res) => {
+  const { sessionCode } = req.params;
+  const session = await DB.getSession(sessionCode);
+
+  if (!session) {
+    return res.status(404).send({ msg: 'Session not found' });
+  }
+
+  const sortedVotes = Object.entries(session.votes || {})
+    .sort(([, a], [, b]) => b - a)
+    .map(([movieId, votes]) => ({ movieId, votes }));
+
+  res.send(sortedVotes);
+});
+
+// UTILITY FUNCTIONS
+function setAuthCookie(res, authToken) {
+  res.cookie(authCookieName, authToken, {
+    secure: true,
+    httpOnly: true,
+    sameSite: 'strict',
+  });
+}
+
+// Start Server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
