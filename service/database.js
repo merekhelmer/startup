@@ -19,7 +19,7 @@ let db;
     console.log(`Connected to MongoDB database: ${dbName}`);
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
-    process.exit(1);
+    process.exit(1); 
   }
 })();
 
@@ -39,4 +39,41 @@ async function createUser(email, password) {
   const user = { email, password: passwordHash, token };
   await db.collection(usersCollectionName).insertOne(user);
   return user;
+}
+
+// Session functions
+async function createSession(creatorEmail) {
+  const sessionCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+  const session = { sessionCode, creator: creatorEmail, preferences: [], votes: {} };
+
+  await db.collection(sessionsCollectionName).insertOne(session);
+  return session;
+}
+
+async function getSession(sessionCode) {
+  return db.collection(sessionsCollectionName).findOne({ sessionCode });
+}
+
+async function addPreferencesToSession(sessionCode, preferences) {
+  await db.collection(sessionsCollectionName).updateOne(
+    { sessionCode },
+    { $push: { preferences } }
+  );
+}
+
+async function addVote(sessionCode, movieId) {
+  await db.collection(sessionsCollectionName).updateOne(
+    { sessionCode },
+    { $inc: { [`votes.${movieId}`]: 1 } }
+  );
+}
+
+module.exports = {
+  getUser,
+  getUserByToken,
+  createUser,
+  createSession,
+  getSession,
+  addPreferencesToSession,
+  addVote,
 };
