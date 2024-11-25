@@ -9,25 +9,29 @@ function Unauthenticated({ onLogin }) {
   const [password, setPassword] = useState('');
   const [displayError, setDisplayError] = useState(null);
 
-  async function loginOrCreate(endpoint) {
+  // Unauthenticated.jsx
+async function loginOrCreate(endpoint) {
+  try {
     const response = await fetch(endpoint, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: userName, password }),
     });
 
-    if (response.status === 200) {
-      const { token } = await response.json();
-      localStorage.setItem('userToken', token); // save token for authenticated requests
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('userToken', data.token);
       onLogin(userName);
     } else {
-      const body = await response.json();
-      setDisplayError(`⚠ Error: ${body.msg}`);
+      // parse error message from server
+      const errorData = await response.json();
+      setDisplayError(`Error: ${errorData.msg}`);
     }
+  } catch (err) {
+    console.error('Error during login:', err);
+    setDisplayError('Error: Unable to login. Please try again later.');
   }
-
+}
   return (
     <div>
       <div className="form-group">

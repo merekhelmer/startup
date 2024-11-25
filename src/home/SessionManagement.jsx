@@ -36,16 +36,24 @@ const SessionManagement = ({ setSessionCode }) => {
     try {
       const response = await fetch('/api/session/join', {
         method: 'POST',
+        credentials: 'include', 
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionCode, userToken }),
+        body: JSON.stringify({ sessionCode }),
       });
 
       if (response.ok) {
-        setSessionCode(sessionCode); // pass session code to parent
+        const data = await response.json();
+        setSessionCode(sessionCode); 
         alert(`Successfully joined session: ${sessionCode}`);
       } else {
-        const errorData = await response.json();
-        alert(`Failed to join session: ${errorData.msg}`);
+        let errorMsg = `Failed to join session: ${response.statusText}`;
+        try {
+          const errorData = await response.json();
+          errorMsg = `Failed to join session: ${errorData.msg}`;
+        } catch (err) {
+          console.error('Error parsing error response as JSON:', err);
+        }
+        alert(errorMsg);
       }
     } catch (error) {
       console.error('Error joining session:', error);
