@@ -104,5 +104,18 @@ I built out the structure of my application, *StreamSync*, using HTML.
 - [x] **Frontend calls service endpoints** 
 - Frontend components use fetch to interact with the backend
 
-  
+## DB/Login 
+- [x] **MongoDB Atlas database created**
+- Successfully set up and connected to MongoDB Atlas for secure and scalable data storage
+- [x] **User registration**
+- New users can create accounts, and their credentials (hashed for security) are stored in the database
+- [x] **Existing user functionality**
+- When an existing user logs in, their credentials are validated from the db, and a unique session token is generated
+- [x] **Uses MongoDB to store credentials**
+- Both user credentials (email and hashed passwords) and session-related data (preferences and votes) are securely stored in the database
+- [x] **Restricts Functionality**
+- You must log in to create a session or vote
+- Secure API routes are accessible only after successful login (token-based validation using cookies)
+
+
 [View Notes](notes.md)
