@@ -1,43 +1,73 @@
+// database.js
 const { MongoClient } = require('mongodb');
 const bcrypt = require('bcrypt');
 const uuid = require('uuid');
 const dbConfig = require('./dbConfig.json');
 
 const url = `mongodb+srv://${dbConfig.userName}:${dbConfig.password}@${dbConfig.hostname}`;
+
 const client = new MongoClient(url);
 const dbName = 'startupDB';
 const usersCollectionName = 'users';
 const sessionsCollectionName = 'sessions';
 
 let db;
+let userCollection;      
+let sessionsCollection;   
 
 // initialize MongoDB connection
 (async function connectDB() {
   try {
     await client.connect();
     db = client.db(dbName);
+
+    userCollection = db.collection(usersCollectionName);
+    sessionsCollection = db.collection(sessionsCollectionName);
+
     console.log(`Connected to MongoDB database: ${dbName}`);
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
-    process.exit(1); 
+    process.exit(1);
   }
 })();
 
 // User functions
 async function getUser(email) {
-  return db.collection(usersCollectionName).findOne({ email });
+  try {
+    return await userCollection.findOne({ email: email });
+  } catch (error) {
+    console.error('Database getUser Error:', error);
+    throw error;
+  }
 }
 
 async function getUserByToken(token) {
-  return db.collection(usersCollectionName).findOne({ token });
+  try {
+    return await userCollection.findOne({ token });
+  } catch (error) {
+    console.error('Database getUserByToken Error:', error);
+    throw error;
+  }
+}
+
+
+async function updateUserToken(email, token) {
+  try {
+    return await userCollection.updateOne({ email: email }, { $set: { token: token } });
+  } catch (error) {
+    console.error('Database updateUserToken Error:', error);
+    throw error;
+  }
 }
 
 async function createUser(email, password) {
   const passwordHash = await bcrypt.hash(password, 10);
-  const token = uuid.v4();
-
-  const user = { email, password: passwordHash, token };
-  await db.collection(usersCollectionName).insertOne(user);
+  const user = {
+    email: email,
+    password: passwordHash,
+    token: uuid.v4(),
+  };
+  await userCollection.insertOne(user);
   return user;
 }
 
@@ -71,6 +101,7 @@ async function addVote(sessionCode, movieId) {
 module.exports = {
   getUser,
   getUserByToken,
+  updateUserToken,
   createUser,
   createSession,
   getSession,

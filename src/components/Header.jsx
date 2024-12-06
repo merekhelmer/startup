@@ -9,7 +9,7 @@ function Header() {
         <div className="logo-container">
           <img src="/Logo.jpg" alt="StreamSync Logo" className="logo" />
         </div>
-        <h1 className="site-title">StreamSync</h1>
+        <h1 className="site-title">CinemaSync</h1>
         <nav>
           <ul className="navigation">
             <li>

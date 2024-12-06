@@ -9,7 +9,7 @@ import './login.css'
 function Login({ userName, authState, onAuthChange }) {
   return (
     <main className="login-container">
-      <h1 className="login-title">Welcome to StreamSync</h1>
+      <h1 className="login-title">Welcome to CinemaSync</h1>
       {authState === AuthState.Authenticated ? (
         <Authenticated userName={userName} onLogout={() => onAuthChange('', AuthState.Unauthenticated)} />
       ) : (
