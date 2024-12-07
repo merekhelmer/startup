@@ -1,5 +1,6 @@
 // src/App.jsx
 import React, { useState } from 'react';
+import { WebSocketNotifier } from './webSocketNotifier';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -24,12 +25,31 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    const handleEvent = (event) => {
+      // incoming WebSocket events
+      console.log('Received event:', event);
+      // ipdate state or UI based on the event
+    };
+
+    webSocketNotifier.addHandler(handleEvent);
+
+    return () => {
+      webSocketNotifier.removeHandler(handleEvent);
+    };
+  }, []);
+
+  const sendMessage = () => {
+    webSocketNotifier.broadcastEvent('User', 'Message', { msg: 'Hello WebSocket!' });
+  };
+
+
   return (
     <BrowserRouter>
       <div className="body">
         <Header />
         <Routes>
-          {/* Default redirection */}
+          {/* default redirection */}
           <Route path="/" element={<Navigate to={authState === AuthState.Authenticated ? "/home" : "/login"} replace />} />
           
           {/* Login Route */}
@@ -38,7 +58,7 @@ function App() {
             element={<Login userName={userName} authState={authState} onAuthChange={handleAuthChange} />}
           />
 
-          {/* Protected Routes with inline checks */}
+          {/* protected routes with inline checks */}
           <Route
             path="/home"
             element={authState === AuthState.Authenticated ? <Home /> : <Navigate to="/login" replace />}
@@ -53,6 +73,8 @@ function App() {
           />
         </Routes>
         <Footer />
+        {/* example button to send a WebSocket message */}
+        <button onClick={sendMessage}>Send WebSocket Message</button>
       </div>
     </BrowserRouter>
   );
