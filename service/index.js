@@ -1,4 +1,5 @@
 const express = require('express');
+const {peerProxy} = require('./peerProxy.js');
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const DB = require('./database.js'); // import database functions
@@ -13,15 +14,21 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.static('public'));
 
-
 // port
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
+
+//start the server
+const httpServer = app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
+
+// websocket proxy
+peerProxy(httpServer);
 
 // API Router
 app.set('trust proxy', true);
 const apiRouter = express.Router();
 app.use('/api', apiRouter);
-
 
 // AUTH ENDPOINTS
 apiRouter.post('/auth/create', async (req, res) => {
