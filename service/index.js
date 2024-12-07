@@ -169,9 +169,3 @@ function setAuthCookie(res, authToken) {
     sameSite: 'strict', 
   });
 }
-
-
-// Start Server
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});

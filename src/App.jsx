@@ -1,6 +1,6 @@
-// src/App.jsx
-import React, { useState } from 'react';
-import { WebSocketNotifier } from './webSocketNotifier';
+import React, { useState, useEffect, useRef } from 'react';
+import WebSocketNotifier from './webSocketNotifier';
+import MovieList from './recommendations/MovieList';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -14,6 +14,9 @@ import './app.css';
 function App() {
   const [userName, setUserName] = useState(localStorage.getItem('userName') || '');
   const [authState, setAuthState] = useState(userName ? AuthState.Authenticated : AuthState.Unauthenticated);
+  const [sessionCode, setSessionCode] = useState(''); 
+
+  const webSocketNotifierRef = useRef(null);
 
   const handleAuthChange = (newUserName, newAuthState) => {
     setUserName(newUserName);
@@ -22,35 +25,54 @@ function App() {
       localStorage.setItem('userName', newUserName);
     } else {
       localStorage.removeItem('userName');
+      setSessionCode('') // reset sessionCode on logout
     }
   };
 
   useEffect(() => {
-    const handleEvent = (event) => {
-      // incoming WebSocket events
-      console.log('Received event:', event);
-      // ipdate state or UI based on the event
-    };
+    if (sessionCode) { 
+      webSocketNotifierRef.current = new WebSocketNotifier(sessionCode);
 
-    webSocketNotifier.addHandler(handleEvent);
+      const handleEvent = (event) => {
+        // incoming WebSocket events
+        console.log('Received event:', event);
+        // update state or UI based on the event
+      };
 
-    return () => {
-      webSocketNotifier.removeHandler(handleEvent);
-    };
-  }, []);
+      webSocketNotifierRef.current.addHandler(handleEvent);
+
+      return () => {
+        if (webSocketNotifierRef.current) {
+          webSocketNotifierRef.current.removeHandler(handleEvent);
+          webSocketNotifierRef.current.close(); // ensure WebSocket is closed on cleanup
+          webSocketNotifierRef.current = null;
+        }
+      };
+    }
+  }, [sessionCode]); // re-run effect if sessionCode changes
 
   const sendMessage = () => {
-    webSocketNotifier.broadcastEvent('User', 'Message', { msg: 'Hello WebSocket!' });
+    if (webSocketNotifierRef.current) {
+      webSocketNotifierRef.current.broadcastEvent('User', 'Message', { msg: 'Hello WebSocket!' });
+    } else {
+      console.warn('WebSocketNotifier is not initialized.');
+    }
   };
 
+  const handleVote = (movieId) => {
+    console.log(`User voted for movie ID: ${movieId}`)
+  };
 
   return (
     <BrowserRouter>
       <div className="body">
         <Header />
         <Routes>
-          {/* default redirection */}
-          <Route path="/" element={<Navigate to={authState === AuthState.Authenticated ? "/home" : "/login"} replace />} />
+          {/* default redirection based on authentication */}
+          <Route
+            path="/"
+            element={<Navigate to={authState === AuthState.Authenticated ? "/home" : "/login"} replace />}
+          />
           
           {/* Login Route */}
           <Route
@@ -58,10 +80,10 @@ function App() {
             element={<Login userName={userName} authState={authState} onAuthChange={handleAuthChange} />}
           />
 
-          {/* protected routes with inline checks */}
+          {/* Protected Routes */}
           <Route
             path="/home"
-            element={authState === AuthState.Authenticated ? <Home /> : <Navigate to="/login" replace />}
+            element={authState === AuthState.Authenticated ? <Home setSessionCode={setSessionCode} /> : <Navigate to="/login" replace />}
           />
           <Route
             path="/recommendations"
@@ -71,10 +93,15 @@ function App() {
             path="/results"
             element={authState === AuthState.Authenticated ? <Results /> : <Navigate to="/login" replace />}
           />
+          
+          {/* Fallback Route */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <Footer />
-        {/* example button to send a WebSocket message */}
-        <button onClick={sendMessage}>Send WebSocket Message</button>
+        {/* WebSocket Message Button */}
+        {authState === AuthState.Authenticated && (
+          <button onClick={sendMessage}>Send WebSocket Message</button>
+        )}
       </div>
     </BrowserRouter>
   );

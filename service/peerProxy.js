@@ -1,13 +1,15 @@
 // service/peerProxy.js
+
 const { WebSocketServer } = require('ws');
 const uuid = require('uuid');
+const DB = require('./database.js'); 
 
 function peerProxy(httpServer) {
   const wss = new WebSocketServer({ noServer: true });
   let connections = [];
 
   httpServer.on('upgrade', (request, socket, head) => {
-    if (request.url === '/ws') {
+    if (request.url.startsWith('/ws')) {
       wss.handleUpgrade(request, socket, head, (ws) => {
         wss.emit('connection', ws, request);
       });
@@ -16,16 +18,35 @@ function peerProxy(httpServer) {
     }
   });
 
-  wss.on('connection', (ws) => {
-    const connection = { id: uuid.v4(), alive: true, ws };
+  wss.on('connection', (ws, request) => {
+    const params = new URLSearchParams(request.url.replace('/ws?', ''));
+    const sessionCode = params.get('session');
+    const userId = uuid.v4();
+
+    const connection = { id: userId, session: sessionCode, alive: true, ws };
     connections.push(connection);
 
-    ws.on('message', (data) => {
-      connections.forEach((c) => {
-        if (c.id !== connection.id) {
-          c.ws.send(data);
+    // notify others in the same session
+    broadcastToSession(sessionCode, {
+      type: 'userJoined',
+      from: 'System',
+      data: { userId },
+    }, userId);
+
+    ws.on('message', async (data) => {
+      try {
+        const message = JSON.parse(data);
+        switch (message.type) {
+          case 'castVote':
+            await handleCastVote(message, sessionCode, userId, ws);
+            break;
+          default:
+            console.warn(`Unhandled message type: ${message.type}`);
+            break;
         }
-      });
+      } catch (error) {
+        console.error('Error handling message:', error);
+      }
     });
 
     ws.on('pong', () => {
@@ -33,11 +54,16 @@ function peerProxy(httpServer) {
     });
 
     ws.on('close', () => {
-      connections = connections.filter((c) => c.id !== connection.id);
+      connections = connections.filter((c) => c.id !== userId);
+      broadcastToSession(sessionCode, {
+        type: 'userLeft',
+        from: 'System',
+        data: { userId },
+      }, userId);
     });
   });
 
-  // keep connections alive
+  // ping to keep connections alive
   setInterval(() => {
     connections.forEach((c) => {
       if (!c.alive) {
@@ -48,6 +74,52 @@ function peerProxy(httpServer) {
       }
     });
   }, 30000);
+
+  // helper Functions
+  async function handleCastVote(message, sessionCode, userId, ws) {
+    const { movieId } = message.data;
+    const from = message.from || 'User';
+
+    if (!movieId) {
+      console.warn('Invalid vote data:', message.data);
+      return;
+    }
+
+    try {
+      // update vote count in db
+      await DB.addVote(sessionCode, movieId);
+
+      // retrieve the updated vote counts
+      const session = await DB.getSession(sessionCode);
+      const updatedVotes = session.votes;
+
+      broadcastToSession(sessionCode, {
+        type: 'voteUpdated',
+        from: 'System',
+        data: { movieId, votes: updatedVotes[movieId] || 0 },
+      }, userId);
+    } catch (error) {
+      console.error('Error processing vote:', error);
+      // send an error message back to the client
+      ws.send(JSON.stringify({
+        type: 'error',
+        from: 'System',
+        data: { msg: 'Failed to record your vote. Please try again.' },
+      }));
+    }
+  }
+
+  function broadcastToSession(sessionCode, message, excludeId = null) {
+    connections.forEach((c) => {
+      if (
+        c.session === sessionCode &&
+        c.id !== excludeId &&
+        c.ws.readyState === WebSocket.OPEN
+      ) {
+        c.ws.send(JSON.stringify(message));
+      }
+    });
+  }
 }
 
 module.exports = { peerProxy };
