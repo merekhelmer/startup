@@ -1,21 +1,20 @@
-//src/webSocketNotifier.js
-
+// src/webSocketNotifier.js
 export class WebSocketNotifier {
-    constructor() {
+    constructor(sessionCode) {
       const port = window.location.port;
       const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
-      this.socket = new WebSocket(`${protocol}://${window.location.hostname}:${port}/ws`);
+      this.socket = new WebSocket(`${protocol}://${window.location.hostname}:${port}/ws?session=${sessionCode}`);
       this.handlers = [];
   
       this.socket.onopen = () => {
-        this.receiveEvent({ from: 'Startup', type: 'System', value: { msg: 'connected' } });
+        this.receiveEvent({ from: 'System', type: 'connected', value: { msg: 'WebSocket connected' } });
       };
   
       this.socket.onclose = () => {
-        this.receiveEvent({ from: 'Startup', type: 'System', value: { msg: 'disconnected' } });
+        this.receiveEvent({ from: 'System', type: 'disconnected', value: { msg: 'WebSocket disconnected' } });
       };
   
-      this.socket.onmessage = async (msg) => {
+      this.socket.onmessage = (msg) => {
         try {
           const event = JSON.parse(msg.data);
           this.receiveEvent(event);
@@ -24,14 +23,13 @@ export class WebSocketNotifier {
         }
       };
   
-      // Optional: Handle errors
       this.socket.onerror = (error) => {
         console.error('WebSocket error:', error);
       };
     }
   
-    broadcastEvent(from, type, value) {
-      const event = { from, type, value };
+    broadcastEvent(type, value) {
+      const event = { type, value };
       if (this.socket.readyState === WebSocket.OPEN) {
         this.socket.send(JSON.stringify(event));
       } else {
@@ -52,4 +50,4 @@ export class WebSocketNotifier {
     }
   }
   
-  export const webSocketNotifier = new WebSocketNotifier();
+  export const createWebSocketNotifier = (sessionCode) => new WebSocketNotifier(sessionCode);

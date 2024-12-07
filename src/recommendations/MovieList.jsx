@@ -1,6 +1,31 @@
-import React from 'react';
+// startup/src/recommendations/MovieList.jsx
+
+import React, { useEffect } from 'react';
+import { createWebSocketNotifier } from '../webSocketNotifier';
 
 const MovieList = ({ movies, sessionCode, onVote }) => {
+  const [webSocket, setWebSocket] = React.useState(null);
+  const [voteCounts, setVoteCounts] = useState({});
+
+  useEffect(() => {
+    const ws = createWebSocketNotifier(sessionCode);
+    ws.addHandler(handleWebSocketEvent);
+    setWebSocket(ws);
+
+    return () => {
+      ws.removeHandler(handleWebSocketEvent);
+    };
+  }, [sessionCode]);
+
+  const handleWebSocketEvent = (event) => {
+    if (event.type === 'voteUpdated') {
+      const { movieId, votes } = event.data;
+      setVoteCounts((prev) => ({ ...prev, [movieId]: votes }));
+      console.log('Vote Updated:', event.data);
+    }
+    // add more event handlers here
+  };
+
   const handleVote = async (movieId) => {
     try {
       const response = await fetch(`/api/vote`, {
@@ -14,6 +39,7 @@ const MovieList = ({ movies, sessionCode, onVote }) => {
       }
 
       onVote(movieId);
+      webSocket.broadcastEvent('castVote', { movieId });
       alert('Vote submitted successfully!');
     } catch (err) {
       console.error('Error submitting vote:', err);
@@ -32,8 +58,6 @@ const MovieList = ({ movies, sessionCode, onVote }) => {
           />
           <div className="movie-details">
             <h3>{movie.title}</h3>
-            <p><strong>Rating:</strong> {movie.vote_average}</p>
-            <p><strong>Release Date:</strong> {movie.release_date}</p>
             <button onClick={() => handleVote(movie.id)}>Vote</button>
           </div>
         </div>
