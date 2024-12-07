@@ -1,8 +1,12 @@
+// startup/src/home/SessionManagement.jsx
+
 import React, { useState } from 'react';
+import { createWebSocketNotifier } from '../webSocketNotifier';
 
 const SessionManagement = ({ setSessionCode }) => {
-  const [sessionCode, setLocalSessionCode] = useState('');
+  const [sessionCodeInput, setSessionCodeInput] = useState('');
   const [userToken] = useState(localStorage.getItem('userToken') || '');
+  const [webSocket, setWebSocket] = useState(null);
 
   const handleSessionCreate = async () => {
     try {
@@ -14,8 +18,9 @@ const SessionManagement = ({ setSessionCode }) => {
 
       if (response.ok) {
         const data = await response.json();
-        setSessionCode(data.sessionCode); // pass session code to parent
+        setSessionCode(data.sessionCode);
         alert(`Session created! Your code is: ${data.sessionCode}`);
+        initializeWebSocket(data.sessionCode);
       } else {
         alert('Failed to create session. Please try again.');
       }
@@ -28,7 +33,7 @@ const SessionManagement = ({ setSessionCode }) => {
   const handleSessionJoin = async (e) => {
     e.preventDefault();
 
-    if (!sessionCode) {
+    if (!sessionCodeInput) {
       alert('Please enter a valid session code.');
       return;
     }
@@ -36,24 +41,18 @@ const SessionManagement = ({ setSessionCode }) => {
     try {
       const response = await fetch('/api/session/join', {
         method: 'POST',
-        credentials: 'include', 
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionCode }),
+        body: JSON.stringify({ sessionCode: sessionCodeInput }),
       });
 
       if (response.ok) {
-        const data = await response.json();
-        setSessionCode(sessionCode); 
-        alert(`Successfully joined session: ${sessionCode}`);
+        setSessionCode(sessionCodeInput);
+        alert(`Successfully joined session: ${sessionCodeInput}`);
+        initializeWebSocket(sessionCodeInput);
       } else {
-        let errorMsg = `Failed to join session: ${response.statusText}`;
-        try {
-          const errorData = await response.json();
-          errorMsg = `Failed to join session: ${errorData.msg}`;
-        } catch (err) {
-          console.error('Error parsing error response as JSON:', err);
-        }
-        alert(errorMsg);
+        const errorData = await response.json();
+        alert(`Failed to join session: ${errorData.msg}`);
       }
     } catch (error) {
       console.error('Error joining session:', error);
@@ -61,15 +60,21 @@ const SessionManagement = ({ setSessionCode }) => {
     }
   };
 
+  const initializeWebSocket = (sessionCode) => {
+    const ws = createWebSocketNotifier(sessionCode);
+    setWebSocket(ws);
+  };
+
   return (
     <section>
       <h2>Start Your Movie Night</h2>
       <button onClick={handleSessionCreate}>Create New Session</button>
+
       <form onSubmit={handleSessionJoin}>
         <input
           type="text"
-          value={sessionCode}
-          onChange={(e) => setLocalSessionCode(e.target.value)}
+          value={sessionCodeInput}
+          onChange={(e) => setSessionCodeInput(e.target.value)}
           placeholder="Enter Session Code"
           required
         />
