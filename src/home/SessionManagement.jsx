@@ -1,19 +1,29 @@
-// startup/src/home/SessionManagement.jsx
-
-import React, { useState } from 'react';
+// src/home/SessionManagement.jsx
+import React, { useState, useEffect } from 'react';
 import { createWebSocketNotifier } from '../webSocketNotifier';
 
 const SessionManagement = ({ setSessionCode }) => {
   const [sessionCodeInput, setSessionCodeInput] = useState('');
-  const [userToken] = useState(localStorage.getItem('userToken') || '');
+  const [activeSessions, setActiveSessions] = useState([]);
   const [webSocket, setWebSocket] = useState(null);
+
+  // Fetch active sessions on component mount
+  useEffect(() => {
+    fetch('/api/sessions/active', {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then((response) => response.json())
+      .then((data) => setActiveSessions(data))
+      .catch((error) => console.error('Error fetching active sessions:', error));
+  }, []);
 
   const handleSessionCreate = async () => {
     try {
       const response = await fetch('/api/session/create', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userToken }),
       });
 
       if (response.ok) {
@@ -30,26 +40,19 @@ const SessionManagement = ({ setSessionCode }) => {
     }
   };
 
-  const handleSessionJoin = async (e) => {
-    e.preventDefault();
-
-    if (!sessionCodeInput) {
-      alert('Please enter a valid session code.');
-      return;
-    }
-
+  const handleSessionJoin = async (sessionCode) => {
     try {
       const response = await fetch('/api/session/join', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionCode: sessionCodeInput }),
+        body: JSON.stringify({ sessionCode }),
       });
 
       if (response.ok) {
-        setSessionCode(sessionCodeInput);
-        alert(`Successfully joined session: ${sessionCodeInput}`);
-        initializeWebSocket(sessionCodeInput);
+        setSessionCode(sessionCode);
+        alert(`Successfully joined session: ${sessionCode}`);
+        initializeWebSocket(sessionCode);
       } else {
         const errorData = await response.json();
         alert(`Failed to join session: ${errorData.msg}`);
@@ -70,7 +73,23 @@ const SessionManagement = ({ setSessionCode }) => {
       <h2>Start Your Movie Night</h2>
       <button onClick={handleSessionCreate}>Create New Session</button>
 
-      <form onSubmit={handleSessionJoin}>
+      <h2>Join an Active Session</h2>
+      <ul>
+        {activeSessions.map((session) => (
+          <li key={session.sessionCode}>
+            Session Code: {session.sessionCode}{' '}
+            <button onClick={() => handleSessionJoin(session.sessionCode)}>Join</button>
+          </li>
+        ))}
+      </ul>
+
+      <h2>Join a Session by Code</h2>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSessionJoin(sessionCodeInput);
+        }}
+      >
         <input
           type="text"
           value={sessionCodeInput}
