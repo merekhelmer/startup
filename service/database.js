@@ -1,29 +1,23 @@
-// database.js
+// service/database.js
 const { MongoClient } = require('mongodb');
 const bcrypt = require('bcrypt');
 const uuid = require('uuid');
 const dbConfig = require('./dbConfig.json');
 
 const url = `mongodb+srv://${dbConfig.userName}:${dbConfig.password}@${dbConfig.hostname}`;
+const dbName = 'startupDB';
 
 const client = new MongoClient(url);
-const dbName = 'startupDB';
-const usersCollectionName = 'users';
-const sessionsCollectionName = 'sessions';
-
 let db;
-let userCollection;      
-let sessionsCollection;   
+let userCollection;
+let sessionsCollection;
 
-// initialize MongoDB connection
 (async function connectDB() {
   try {
     await client.connect();
     db = client.db(dbName);
-
-    userCollection = db.collection(usersCollectionName);
-    sessionsCollection = db.collection(sessionsCollectionName);
-
+    userCollection = db.collection('users');
+    sessionsCollection = db.collection('sessions');
     console.log(`Connected to MongoDB database: ${dbName}`);
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
@@ -31,68 +25,46 @@ let sessionsCollection;
   }
 })();
 
-// User functions
 async function getUser(email) {
-  try {
-    return await userCollection.findOne({ email: email });
-  } catch (error) {
-    console.error('Database getUser Error:', error);
-    throw error;
-  }
+  return await userCollection.findOne({ email });
 }
 
 async function getUserByToken(token) {
-  try {
-    return await userCollection.findOne({ token });
-  } catch (error) {
-    console.error('Database getUserByToken Error:', error);
-    throw error;
-  }
-}
-
-
-async function updateUserToken(email, token) {
-  try {
-    return await userCollection.updateOne({ email: email }, { $set: { token: token } });
-  } catch (error) {
-    console.error('Database updateUserToken Error:', error);
-    throw error;
-  }
+  return await userCollection.findOne({ token });
 }
 
 async function createUser(email, password) {
-  const passwordHash = await bcrypt.hash(password, 10);
-  const user = {
-    email: email,
-    password: passwordHash,
-    token: uuid.v4(),
-  };
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const user = { email, password: hashedPassword, token: uuid.v4() };
   await userCollection.insertOne(user);
   return user;
 }
 
-// Session functions
-async function createSession(creatorEmail) {
-  const sessionCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-  const session = { sessionCode, creator: creatorEmail, preferences: [], votes: {} };
+function generateSessionCode() {
+  return Math.random().toString(36).substring(2, 8).toUpperCase();
+}
 
-  await db.collection(sessionsCollectionName).insertOne(session);
-  return session;
+async function createSession(session) {
+  await sessionsCollection.insertOne(session);
 }
 
 async function getSession(sessionCode) {
-  return db.collection(sessionsCollectionName).findOne({ sessionCode });
+  return await sessionsCollection.findOne({ sessionCode });
+}
+
+async function getActiveSessions() {
+  return await sessionsCollection.find({ isActive: true }).toArray();
 }
 
 async function addPreferencesToSession(sessionCode, preferences) {
-  await db.collection(sessionsCollectionName).updateOne(
+  await sessionsCollection.updateOne(
     { sessionCode },
-    { $push: { preferences } }
+    { $set: { preferences } }
   );
 }
 
 async function addVote(sessionCode, movieId) {
-  await db.collection(sessionsCollectionName).updateOne(
+  await sessionsCollection.updateOne(
     { sessionCode },
     { $inc: { [`votes.${movieId}`]: 1 } }
   );
@@ -101,10 +73,11 @@ async function addVote(sessionCode, movieId) {
 module.exports = {
   getUser,
   getUserByToken,
-  updateUserToken,
   createUser,
+  generateSessionCode,
   createSession,
   getSession,
+  getActiveSessions,
   addPreferencesToSession,
   addVote,
 };

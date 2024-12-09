@@ -1,13 +1,12 @@
 // src/home/SessionManagement.jsx
 import React, { useState, useEffect } from 'react';
-import { createWebSocketNotifier } from '../webSocketNotifier';
+import WebSocketNotifier from '../webSocketNotifier';
 
 const SessionManagement = ({ setSessionCode }) => {
   const [sessionCodeInput, setSessionCodeInput] = useState('');
   const [activeSessions, setActiveSessions] = useState([]);
   const [webSocket, setWebSocket] = useState(null);
 
-  // Fetch active sessions on component mount
   useEffect(() => {
     fetch('/api/sessions/active', {
       method: 'GET',
@@ -64,7 +63,7 @@ const SessionManagement = ({ setSessionCode }) => {
   };
 
   const initializeWebSocket = (sessionCode) => {
-    const ws = createWebSocketNotifier(sessionCode);
+    const ws = new WebSocketNotifier(sessionCode);
     setWebSocket(ws);
   };
 

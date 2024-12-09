@@ -98,10 +98,6 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <Footer />
-        {/* WebSocket Message Button */}
-        {authState === AuthState.Authenticated && (
-          <button onClick={sendMessage}>Send WebSocket Message</button>
-        )}
       </div>
     </BrowserRouter>
   );
