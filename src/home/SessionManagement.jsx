@@ -1,6 +1,6 @@
-// src/home/SessionManagement.jsx
 import React, { useState, useEffect } from 'react';
 import WebSocketNotifier from '../webSocketNotifier';
+import SessionMessages from './SessionMessages.jsx'; 
 
 const SessionManagement = ({ setSessionCode }) => {
   const [sessionCodeInput, setSessionCodeInput] = useState('');
@@ -98,6 +98,8 @@ const SessionManagement = ({ setSessionCode }) => {
         />
         <button type="submit">Join Session</button>
       </form>
+
+      {webSocket && <SessionMessages webSocket={webSocket} />} {/* Render the SessionMessages component */}
     </section>
   );
 };
