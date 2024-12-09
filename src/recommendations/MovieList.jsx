@@ -1,19 +1,18 @@
-// startup/src/recommendations/MovieList.jsx
-
-import React, { useEffect } from 'react';
-import { createWebSocketNotifier } from '../webSocketNotifier';
+// src/recommendations/MovieList.jsx
+import React, { useEffect, useState } from 'react';
+import WebSocketNotifier from '../webSocketNotifier';
 
 const MovieList = ({ movies, sessionCode, onVote }) => {
-  const [webSocket, setWebSocket] = React.useState(null);
+  const [webSocket, setWebSocket] = useState(null);
   const [voteCounts, setVoteCounts] = useState({});
 
   useEffect(() => {
-    const ws = createWebSocketNotifier(sessionCode);
-    ws.addHandler(handleWebSocketEvent);
-    setWebSocket(ws);
+    const webSocketNotifier = new WebSocketNotifier(sessionCode);
+    webSocketNotifier.addHandler(handleWebSocketEvent);
+    setWebSocket(webSocketNotifier);
 
     return () => {
-      ws.removeHandler(handleWebSocketEvent);
+      webSocketNotifier.removeHandler(handleWebSocketEvent);
     };
   }, [sessionCode]);
 
@@ -23,46 +22,25 @@ const MovieList = ({ movies, sessionCode, onVote }) => {
       setVoteCounts((prev) => ({ ...prev, [movieId]: votes }));
       console.log('Vote Updated:', event.data);
     }
-    // add more event handlers here
   };
 
-  const handleVote = async (movieId) => {
-    try {
-      const response = await fetch(`/api/vote`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionCode, movieId }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to submit vote');
-      }
-
-      onVote(movieId);
+  const handleVote = (movieId) => {
+    if (webSocket) {
       webSocket.broadcastEvent('castVote', { movieId });
-      alert('Vote submitted successfully!');
-    } catch (err) {
-      console.error('Error submitting vote:', err);
-      alert('Failed to submit vote. Please try again.');
     }
+    onVote(movieId);
   };
 
   return (
-    <section className="movie-list">
+    <div>
       {movies.map((movie) => (
-        <div key={movie.id} className="movie-card">
-          <img
-            src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
-            alt={movie.title}
-            className="movie-poster"
-          />
-          <div className="movie-details">
-            <h3>{movie.title}</h3>
-            <button onClick={() => handleVote(movie.id)}>Vote</button>
-          </div>
+        <div key={movie.id}>
+          <h3>{movie.title}</h3>
+          <button onClick={() => handleVote(movie.id)}>Vote</button>
+          <p>Votes: {voteCounts[movie.id] || 0}</p>
         </div>
       ))}
-    </section>
+    </div>
   );
 };
 

@@ -1,8 +1,7 @@
 // service/peerProxy.js
-
 const { WebSocketServer } = require('ws');
 const uuid = require('uuid');
-const DB = require('./database.js'); 
+const DB = require('./database.js');
 
 function peerProxy(httpServer) {
   const wss = new WebSocketServer({ noServer: true });
@@ -26,7 +25,7 @@ function peerProxy(httpServer) {
     const connection = { id: userId, session: sessionCode, alive: true, ws };
     connections.push(connection);
 
-    // notify others in the same session
+    // Notify others in the same session
     broadcastToSession(sessionCode, {
       type: 'userJoined',
       from: 'System',
@@ -63,7 +62,6 @@ function peerProxy(httpServer) {
     });
   });
 
-  // ping to keep connections alive
   setInterval(() => {
     connections.forEach((c) => {
       if (!c.alive) {
@@ -75,21 +73,15 @@ function peerProxy(httpServer) {
     });
   }, 30000);
 
-  // helper Functions
   async function handleCastVote(message, sessionCode, userId, ws) {
     const { movieId } = message.data;
-    const from = message.from || 'User';
-
     if (!movieId) {
       console.warn('Invalid vote data:', message.data);
       return;
     }
 
     try {
-      // update vote count in db
       await DB.addVote(sessionCode, movieId);
-
-      // retrieve the updated vote counts
       const session = await DB.getSession(sessionCode);
       const updatedVotes = session.votes;
 
@@ -100,7 +92,6 @@ function peerProxy(httpServer) {
       }, userId);
     } catch (error) {
       console.error('Error processing vote:', error);
-      // send an error message back to the client
       ws.send(JSON.stringify({
         type: 'error',
         from: 'System',
@@ -111,11 +102,7 @@ function peerProxy(httpServer) {
 
   function broadcastToSession(sessionCode, message, excludeId = null) {
     connections.forEach((c) => {
-      if (
-        c.session === sessionCode &&
-        c.id !== excludeId &&
-        c.ws.readyState === WebSocket.OPEN
-      ) {
+      if (c.session === sessionCode && c.id !== excludeId && c.ws.readyState === WebSocket.OPEN) {
         c.ws.send(JSON.stringify(message));
       }
     });
