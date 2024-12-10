@@ -1,100 +1,88 @@
+// PreferenceSelection.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const PreferenceSelection = ({ sessionCode }) => {
-  const [mood, setMood] = useState('');
-  const [genres, setGenres] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedMovie, setSelectedMovie] = useState(null);
   const navigate = useNavigate();
 
-  const toggleGenre = (genre) => {
-    setGenres((prevGenres) =>
-      prevGenres.includes(genre)
-        ? prevGenres.filter((g) => g !== genre)
-        : [...prevGenres, genre]
-    );
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        `http://www.omdbapi.com/?apikey=cf0fa3b1&s=${encodeURIComponent(searchQuery)}`
+      );
+      const data = await response.json();
+      if (data.Response === 'True') {
+        setSearchResults(data.Search);
+      } else {
+        setSearchResults([]);
+        alert('No movies found.');
+      }
+    } catch (error) {
+      console.error('Error fetching data from OMDb API:', error);
+    }
   };
 
-  const handleSubmitPreferences = async (e) => {
-    e.preventDefault();
-
-    if (!sessionCode) {
-      alert('No session code found. Please create or join a session.');
+  const submitMovie = async () => {
+    if (!selectedMovie) {
+      alert('Please select a movie to submit.');
       return;
     }
-
     try {
-      const response = await fetch('/api/session/preferences', {
+      const response = await fetch(`/api/session/movies`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionCode,
-          mood,
-          genres,
-        }),
+        body: JSON.stringify({ sessionCode, movie: selectedMovie }),
       });
-
       if (response.ok) {
-        alert('Preferences submitted successfully!');
+        // Navigate to the recommendations or voting page
         navigate('/recommendations', { state: { sessionCode } });
       } else {
-        const errorData = await response.json();
-        console.error('Error submitting preferences:', errorData);
-        alert('Failed to submit preferences.');
+        console.error('Error submitting movie.');
+        alert('Error submitting movie.');
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('An error occurred. Please try again.');
+      alert('An error occurred while submitting the movie.');
     }
   };
 
   return (
     <section>
-      <h2>Select Your Preferences</h2>
-      <form onSubmit={handleSubmitPreferences}>
-        {/* Mood Selection */}
-        <h3>Your Mood:</h3>
-        <label>
-          <input type="radio" name="mood" value="happy" onChange={(e) => setMood(e.target.value)} /> 😊 Happy
-        </label>
-        <label>
-          <input type="radio" name="mood" value="romantic" onChange={(e) => setMood(e.target.value)} /> ❤️ Romantic
-        </label>
-        <label>
-          <input type="radio" name="mood" value="sad" onChange={(e) => setMood(e.target.value)} /> 😢 Sad
-        </label>
-        <label>
-          <input type="radio" name="mood" value="excited" onChange={(e) => setMood(e.target.value)} /> 🎉 Excited
-        </label>
-        <label>
-          <input type="radio" name="mood" value="scared" onChange={(e) => setMood(e.target.value)} /> 😱 Scared
-        </label>
-        <label>
-          <input type="radio" name="mood" value="funny" onChange={(e) => setMood(e.target.value)} /> 😂 Funny
-        </label>
-
-        {/* Genre Selection */}
-        <h3>Preferred Genres:</h3>
-        <label>
-          <input type="checkbox" value="action" onChange={() => toggleGenre('action')} /> Action
-        </label>
-        <label>
-          <input type="checkbox" value="comedy" onChange={() => toggleGenre('comedy')} /> Comedy
-        </label>
-        <label>
-          <input type="checkbox" value="drama" onChange={() => toggleGenre('drama')} /> Drama
-        </label>
-        <label>
-          <input type="checkbox" value="horror" onChange={() => toggleGenre('horror')} /> Horror
-        </label>
-        <label>
-          <input type="checkbox" value="romance" onChange={() => toggleGenre('romance')} /> Romance
-        </label>
-        <label>
-          <input type="checkbox" value="sci-fi" onChange={() => toggleGenre('sci-fi')} /> Sci-Fi
-        </label>
-
-        <button type="submit">Submit Preferences</button>
+      <h2>Search for a Movie</h2>
+      <form onSubmit={handleSearch}>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Enter movie title"
+          required
+        />
+        <button type="submit">Search</button>
       </form>
+
+      <div>
+        <h3>Search Results</h3>
+        {searchResults.length === 0 && <p>No results to display.</p>}
+        {searchResults.map((movie) => (
+          <div key={movie.imdbID}>
+            <input
+              type="radio"
+              name="selectedMovie"
+              value={movie.imdbID}
+              onChange={() => setSelectedMovie(movie)}
+            />
+            <label>
+              {movie.Title} ({movie.Year})
+            </label>
+          </div>
+        ))}
+      </div>
+
+      <button onClick={submitMovie}>Submit Movie for Voting</button>
     </section>
   );
 };

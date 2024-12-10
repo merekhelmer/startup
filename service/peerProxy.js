@@ -25,7 +25,7 @@ function peerProxy(httpServer) {
     const connection = { id: userId, session: sessionCode, alive: true, ws };
     connections.push(connection);
 
-    // Notify others in the same session
+    // notify others in the same session
     broadcastToSession(sessionCode, {
       type: 'userJoined',
       from: 'System',

@@ -39,7 +39,7 @@ apiRouter.post('/auth/login', async (req, res) => {
   const { email, password } = req.body;
   const user = await DB.getUser(email);
   if (user && await bcrypt.compare(password, user.password)) {
-    res.cookie(authCookieName, user.token, { httpOnly: true, secure: true, sameSite: 'strict' });
+    res.cookie(authCookieName, user.token, { httpOnly: true, sameSite: 'strict' });
     res.status(200).send({ msg: 'Login successful' });
   } else {
     res.status(401).send({ msg: 'Unauthorized' });
@@ -51,7 +51,7 @@ apiRouter.post('/auth/logout', (req, res) => {
   res.status(204).end();
 });
 
-// Middleware to verify authentication
+// middleware to verify authentication
 apiRouter.use(async (req, res, next) => {
   const authToken = req.cookies[authCookieName];
   const user = await DB.getUserByToken(authToken);
@@ -143,9 +143,46 @@ apiRouter.get('/recommendations/:sessionCode', async (req, res) => {
   }
 });
 
+
+apiRouter.post('/session/movies', async (req, res) => {
+  try {
+    const { sessionCode, movie } = req.body;
+    if (!movie || !movie.imdbID) {
+      return res.status(400).send({ msg: 'Invalid movie data' });
+    }
+    const session = await DB.getSession(sessionCode);
+    if (!session) {
+      return res.status(404).send({ msg: 'Session not found' });
+    }
+    await DB.addMovieToSession(sessionCode, movie);
+    res.send({ msg: 'Movie added successfully' });
+  } catch (error) {
+    console.error('Error adding movie to session:', error);
+    res.status(500).send({ msg: 'Internal Server Error' });
+  }
+});
+
+
+apiRouter.get('/session/:sessionCode/movies', async (req, res) => {
+  try {
+    const { sessionCode } = req.params;
+    const session = await DB.getSession(sessionCode);
+    if (!session) {
+      return res.status(404).send({ msg: 'Session not found' });
+    }
+    res.json({ movies: session.movies || [] });
+  } catch (error) {
+    console.error('Error fetching session movies:', error);
+    res.status(500).send({ msg: 'Internal Server Error' });
+  }
+});
+
 apiRouter.post('/vote', async (req, res) => {
   try {
     const { sessionCode, movieId } = req.body;
+    if (!movieId) {
+      return res.status(400).send({ msg: 'Movie ID is required' });
+    }
     const session = await DB.getSession(sessionCode);
     if (!session) {
       return res.status(404).send({ msg: 'Session not found' });
@@ -158,6 +195,7 @@ apiRouter.post('/vote', async (req, res) => {
   }
 });
 
+// service/index.js
 apiRouter.get('/results/:sessionCode', async (req, res) => {
   try {
     const { sessionCode } = req.params;
@@ -167,12 +205,15 @@ apiRouter.get('/results/:sessionCode', async (req, res) => {
     }
 
     const votes = session.votes || {};
-    const results = Object.keys(votes).map((movieId) => ({
-      movieId,
-      votes: votes[movieId],
-    }));
+    // sort movies by votes in descending order
+    const results = Object.keys(votes)
+      .map((movieId) => ({
+        movieId,
+        votes: votes[movieId],
+      }))
+      .sort((a, b) => b.votes - a.votes);
 
-    res.json(results);
+    res.json({ results });
   } catch (error) {
     console.error('Error fetching results:', error);
     res.status(500).send({ msg: 'Internal Server Error' });

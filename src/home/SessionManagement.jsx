@@ -13,7 +13,13 @@ const SessionManagement = ({ setSessionCode }) => {
       credentials: 'include',
     })
       .then((response) => response.json())
-      .then((data) => setActiveSessions(data))
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setActiveSessions(data);
+        } else {
+          setActiveSessions([]);
+        }
+      })
       .catch((error) => console.error('Error fetching active sessions:', error));
   }, []);
 

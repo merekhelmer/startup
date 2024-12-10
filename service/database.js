@@ -63,6 +63,13 @@ async function addPreferencesToSession(sessionCode, preferences) {
   );
 }
 
+async function addMovieToSession(sessionCode, movie) {
+  await sessionsCollection.updateOne(
+    { sessionCode },
+    { $push: { movies: movie } }
+  );
+}
+
 async function addVote(sessionCode, movieId) {
   await sessionsCollection.updateOne(
     { sessionCode },
@@ -79,5 +86,6 @@ module.exports = {
   getSession,
   getActiveSessions,
   addPreferencesToSession,
+  addMovieToSession,
   addVote,
 };
