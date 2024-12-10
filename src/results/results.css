@@ -26,13 +26,14 @@
     color: #333;
 }
 
-/* Vote Results*/
+/* Vote Results */
 #vote-results {
     max-width: 800px;
     margin: 40px auto;
     padding: 20px;
     background-color: #fff; 
     border-radius: 5px; 
+    text-align: center;
 }
 
 #vote-results h2 {
@@ -44,6 +45,7 @@
 #vote-results ul {
     list-style: none;
     padding-left: 0;
+    text-align: center;
 }
 
 #vote-results li {

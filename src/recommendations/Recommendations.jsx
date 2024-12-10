@@ -1,99 +1,98 @@
+// Recommendations.jsx
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import './recommendations.css';
 
 const Recommendations = () => {
   const location = useLocation();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const sessionCode = location.state?.sessionCode;
-
-  const [recommendations, setRecommendations] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [movies, setMovies] = useState([]);
+  const [selectedMovieId, setSelectedMovieId] = useState(null);
+  const [movieDetails, setMovieDetails] = useState({});
 
   useEffect(() => {
-    const fetchRecommendations = async () => {
-      if (!sessionCode) {
-        setError('Session code is missing.');
-        setLoading(false);
-        return;
-      }
-
+    const fetchSessionMovies = async () => {
       try {
-        const response = await fetch(`/api/recommendations/${sessionCode}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch recommendations.');
-        }
-
+        const response = await fetch(`/api/session/${sessionCode}/movies`);
         const data = await response.json();
-        setRecommendations(data.movies || []);
-      } catch (err) {
-        console.error('Error fetching recommendations:', err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        const uniqueMovies = Array.from(new Set(data.movies.map(movie => movie.imdbID)))
+          .map(id => data.movies.find(movie => movie.imdbID === id));
+        setMovies(uniqueMovies);
+
+        // Fetch details for each movie
+        const details = {};
+        for (const movie of uniqueMovies) {
+          const movieDetailsResponse = await fetch(
+            `http://www.omdbapi.com/?apikey=cf0fa3b1&i=${movie.imdbID}`
+          );
+          const movieDetails = await movieDetailsResponse.json();
+          details[movie.imdbID] = movieDetails;
+        }
+        setMovieDetails(details);
+      } catch (error) {
+        console.error('Error fetching movies:', error);
       }
     };
 
-    fetchRecommendations();
+    fetchSessionMovies();
   }, [sessionCode]);
 
   const handleVote = async () => {
-    if (!selectedMovie) {
+    if (!selectedMovieId) {
       alert('Please select a movie to vote for.');
       return;
     }
-
     try {
       const response = await fetch('/api/vote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionCode, movieId: selectedMovie }),
+        body: JSON.stringify({ sessionCode, movieId: selectedMovieId }),
       });
-
       if (response.ok) {
         alert('Your vote has been recorded!');
-        navigate('/results', { state: { sessionCode } }); // redirect to Results page
+        navigate('/results', { state: { sessionCode } });
       } else {
-        const errorData = await response.json();
-        console.error('Error submitting vote:', errorData);
+        console.error('Error submitting vote.');
         alert('Failed to submit your vote.');
       }
-    } catch (err) {
-      console.error('Error:', err);
-      alert('An error occurred. Please try again.');
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while submitting your vote.');
     }
   };
 
-  if (loading) return <p>Loading recommendations...</p>;
-  if (error) return <p>Error: {error}</p>;
-
   return (
-    <main className="container">
-      <h2>Movie Recommendations</h2>
-      <div className="recommendations">
-        {recommendations.map((movie) => (
-          <div key={movie.id} className="movie-card">
-            <div className="movie-details">
-              <h3>{movie.title}</h3>
-              <p><strong>Rating:</strong> {movie.vote_average}</p>
-              <p><strong>Release Date:</strong> {movie.release_date}</p>
-              <label>
-                <input
-                  type="radio"
-                  name="vote"
-                  value={movie.id}
-                  onChange={() => setSelectedMovie(movie.id)}
-                />{' '}
-                Vote for this movie
+    <section id="movie-recommendations">
+      <h2>Movies for Voting</h2>
+      {movies.length === 0 && <p>No movies available for voting.</p>}
+      <form id="voting-form">
+        {movies.map((movie) => {
+          const details = movieDetails[movie.imdbID];
+          return (
+            <div key={movie.imdbID} className="movie-item">
+              <input
+                type="radio"
+                name="vote"
+                value={movie.imdbID}
+                id={`vote-${movie.imdbID}`}
+                onChange={() => setSelectedMovieId(movie.imdbID)}
+              />
+              <label htmlFor={`vote-${movie.imdbID}`}>
+                <h3>{movie.Title} ({movie.Year})</h3>
+                {details && (
+                  <>
+                    <img src={details.Poster} alt={details.Title} style={{ width: '100px' }} />
+                    <p><strong>Genre:</strong> {details.Genre}</p>
+                    <p><strong>Plot:</strong> {details.Plot}</p>
+                  </>
+                )}
               </label>
             </div>
-          </div>
-        ))}
-      </div>
-      <button onClick={handleVote}>Submit Vote</button>
-    </main>
+          );
+        })}
+        <button type="button" onClick={handleVote}>Submit Vote</button>
+      </form>
+    </section>
   );
 };
 
