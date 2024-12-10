@@ -38,7 +38,6 @@ const PreferenceSelection = ({ sessionCode }) => {
         body: JSON.stringify({ sessionCode, movie: selectedMovie }),
       });
       if (response.ok) {
-        // Navigate to the recommendations or voting page
         navigate('/recommendations', { state: { sessionCode } });
       } else {
         console.error('Error submitting movie.');

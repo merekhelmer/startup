@@ -1,5 +1,5 @@
 // service/peerProxy.js
-const { WebSocketServer } = require('ws');
+const { WebSocketServer, WebSocket } = require('ws');
 const uuid = require('uuid');
 const DB = require('./database.js');
 
@@ -20,16 +20,17 @@ function peerProxy(httpServer) {
   wss.on('connection', (ws, request) => {
     const params = new URLSearchParams(request.url.replace('/ws?', ''));
     const sessionCode = params.get('session');
+    const userName = params.get('userName') || 'Anonymous';
     const userId = uuid.v4();
 
-    const connection = { id: userId, session: sessionCode, alive: true, ws };
+    const connection = { id: userId, session: sessionCode, userName, alive: true, ws };
     connections.push(connection);
 
     // notify others in the same session
     broadcastToSession(sessionCode, {
       type: 'userJoined',
       from: 'System',
-      data: { userId },
+      data: { userId, userName },
     }, userId);
 
     ws.on('message', async (data) => {
@@ -106,6 +107,15 @@ function peerProxy(httpServer) {
         c.ws.send(JSON.stringify(message));
       }
     });
+  }
+
+  async function closeSession(sessionCode) {
+    try {
+      await DB.closeSession(sessionCode);
+      console.log(`Session ${sessionCode} closed due to inactivity.`);
+    } catch (error) {
+      console.error(`Error closing session ${sessionCode}:`, error);
+    }
   }
 }
 

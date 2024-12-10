@@ -6,9 +6,9 @@ const SessionMessages = ({ webSocket }) => {
   useEffect(() => {
     const handleWebSocketEvent = (event) => {
       if (event.type === 'userJoined') {
-        setMessages((msgs) => [...msgs, `User ${event.data.userId} joined the session.`]);
+        setMessages((msgs) => [...msgs, `User ${event.data.userName} joined the session.`]);
       } else if (event.type === 'userLeft') {
-        setMessages((msgs) => [...msgs, `User ${event.data.userId} left the session.`]);
+        setMessages((msgs) => [...msgs, `User ${event.data.userName} left the session.`]);
       }
     };
 

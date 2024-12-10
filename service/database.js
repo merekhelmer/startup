@@ -56,11 +56,15 @@ async function getActiveSessions() {
   return await sessionsCollection.find({ isActive: true }).toArray();
 }
 
-async function addPreferencesToSession(sessionCode, preferences) {
-  await sessionsCollection.updateOne(
-    { sessionCode },
-    { $set: { preferences } }
-  );
+// async function addPreferencesToSession(sessionCode, preferences) {
+//   await sessionsCollection.updateOne(
+//     { sessionCode },
+//     { $set: { preferences } }
+//   );
+// }
+
+async function closeSession(sessionCode) {
+  await db.collection('sessions').deleteOne({ sessionCode });
 }
 
 async function addMovieToSession(sessionCode, movie) {
@@ -85,7 +89,7 @@ module.exports = {
   createSession,
   getSession,
   getActiveSessions,
-  addPreferencesToSession,
+  closeSession,
   addMovieToSession,
   addVote,
 };
