@@ -12,7 +12,7 @@ const PreferenceSelection = ({ sessionCode }) => {
     e.preventDefault();
     try {
       const response = await fetch(
-        `http://www.omdbapi.com/?apikey=cf0fa3b1&s=${encodeURIComponent(searchQuery)}`
+        `https://www.omdbapi.com/?apikey=cf0fa3b1&s=${encodeURIComponent(searchQuery)}`
       );
       const data = await response.json();
       if (data.Response === 'True') {

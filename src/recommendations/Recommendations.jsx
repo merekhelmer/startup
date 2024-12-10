@@ -23,7 +23,7 @@ const Recommendations = () => {
         const details = {};
         for (const movie of uniqueMovies) {
           const movieDetailsResponse = await fetch(
-            `http://www.omdbapi.com/?apikey=cf0fa3b1&i=${movie.imdbID}`
+            `https://www.omdbapi.com/?apikey=cf0fa3b1&i=${movie.imdbID}`
           );
           const movieDetails = await movieDetailsResponse.json();
           details[movie.imdbID] = movieDetails;

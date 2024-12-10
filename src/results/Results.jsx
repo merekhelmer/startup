@@ -21,7 +21,7 @@ const Results = () => {
         for (const result of data.results) {
           const movieId = result.movieId;
           const movieDetailsResponse = await fetch(
-            `http://www.omdbapi.com/?apikey=cf0fa3b1&i=${movieId}`
+            `https://www.omdbapi.com/?apikey=cf0fa3b1&i=${movieId}`
           );
           const movieDetails = await movieDetailsResponse.json();
           details[movieId] = movieDetails;
