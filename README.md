@@ -117,5 +117,17 @@ I built out the structure of my application, *StreamSync*, using HTML.
 - You must log in to create a session or vote
 - Secure API routes are accessible only after successful login (token-based validation using cookies)
 
+## WebSocket 
+- [x] **Backend listens for WebSocket connection**
+- Backend sets up a WebSocket server.  It listens for upgrade requests on the /ws endpoint and handles new WebSocket connections
+- [x] **Frontend makes WebSocket connection**
+- The frontend establishes a WebSocket connection in the WebSocketNotifier class
+- [x] **Data sent over WebSocket connection**
+- Data is transmitted over the WebSocket using the broadcastEvent method within WebSocketNotifier
+- [x] **WebSocket data displayed in the application interface**
+- Components like `SessionMessages.jsx` listen for incoming WebSocket events by adding handlers to the WebSocketNotifier
+- [x] **All visible elements are working**
+- Implemented 3rd party API (OMBd) and replaced preferences with search query for movie submission
+- The application integrates user authentication, session management, voting, and real-time updates via WebSockets
 
 [View Notes](notes.md)
