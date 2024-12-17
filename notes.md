@@ -121,3 +121,105 @@ Example Domain: startup.stream.sync.click
 #### HTTPS and Web Certificates
 - HTTPS: Secure version of HTTP, encrypts data between client and server
 - Web Certificate: Required for HTTPS, validates the identity of the website, issued by Certificate Authorities (CAs).
+
+## Final Study Notes
+#### Common Ports
+- HTTP: 80
+- HTTPS: 443
+- SSH:  22
+#### HTTP Status Codes
+- 300 Range (Redirection): Requested resource has moved or requires redirection (`301 Moved Permanently`, `302 Found`)
+- 400 Range (Client Errors): Request was invalid or cannot be fulfilled (`400 Bad Request`, `404 Not Found`)
+- 500 Range (Server Errors): Server encountered an error and cannot fulfill the request (`500 Internal Server Error`)
+#### HTTP Headers
+`Content-Type Header`: Indicates the media type of the resource (text/html, application/json), tells the client how to interpret the response data
+#### Cookies
+- Secure Cookie: only sent over HTTPS connections
+- HttpOnly Cookie: Inaccessible to client-side JavaScript; mitigates XSS attacks
+- SameSite Cookie: Restricts cross-site request handling, includes Strict, Lax, None (requires secure flag)
+#### Express Middleware 
+```
+app.use((req, res, next) => {
+    console.log(req.method, req.path);
+    next();
+});
+```
+For an HTTP GET request to /api/document, the output would be:
+`GET /api/document`
+#### Front End JavaScript Fetch
+Example backend code:
+```
+app.get('/api/data', (req, res) => {
+    res.json({ message: "Hello, World!" });
+});
+```
+Frontend fetch:
+```
+fetch('/api/data')
+  .then(res => res.json())
+  .then(data => console.log(data.message));
+```
+Console output:
+Hello, World!
+#### MongoDB Queries
+`{name: "Mark"}`
+This query selects all documents where the name field matches "Mark" exactly.
+example: `{ "_id": 1, "name": "Mark", "age": 25 }`
+#### Password Storage
+Passwords should be stored using a strong hash function (bcrypt2), never store in plain text
+#### WebSockets
+Back-end:
+```
+const WebSocket = require('ws');
+const server = new WebSocket.Server({ port: 8080 });
+server.on('connection', ws => {
+    ws.send('Welcome!');
+});
+```
+Front-end:
+```
+const ws = new WebSocket('ws://localhost:8080');
+ws.onmessage = event => console.log(event.data);
+```
+Console log:
+Welcome!
+#### Acronyms
+- JSX: JavaScript XML (syntax extension for React)
+- JS: JavaScript
+- AWS: Amazon Web Services
+- NPM: Node Package Manager
+- NVM: Node Version Manager
+#### React
+```
+const Greeting = ({ name }) => <div>Hello, {name}!</div>;
+```
+For `<Greeting name="Merek"` />, output:
+Hello, Merek!
+
+- Nested Components: React components can include each other. The output is the combined rendered result of all included components
+- React.useState Hook: Allows you to add state to a functional component. Returns an array: [stateValue, setStateFunction].
+```
+const Counter = () => {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>{count}</button>;
+};
+```
+The button updates and displays the count state.
+
+- useState: Manage component state
+- useContext: Access and update context values
+- useRef: Access DOM elements or persist values
+- useEffect: Side effects (data fetching, subscriptions) that run after render.
+- useMemo/useCallback (Performance Hooks): Optimize rendering
+#### React Router
+Allows route-based rendering in React apps, BrowserRouter must wrap routes, Link creates navigable links, and Route defines a component for a particular path
+#### package.json
+Eescribes the project, lists dependencies, scripts, and other metadata for a Node.js project
+#### fetch Function
+fetch(url, options): Performs network requests, returns a promise with a Response. Used in front end JS and can be used in back end Node.js
+#### Node.js
+Node.js runs JavaScript on the server-side and provides a runtime for building scalable applications
+#### PM2
+A production process manager for Node.js applications, helps keep apps running, manage restarts, and load balancing.
+#### Vite
+A build tool that provides fast development server and optimized builds for modern web projects, often used with React, Vue, etc.
