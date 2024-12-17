@@ -146,6 +146,10 @@ app.use((req, res, next) => {
 ```
 For an HTTP GET request to /api/document, the output would be:
 `GET /api/document`
+
+- Middleware and route handlers execute in the order they are defined.
+- Once a response is sent (e.g., res.send()), subsequent middleware or handlers do not execute.
+
 #### Front End JavaScript Fetch
 Example backend code:
 ```
@@ -196,20 +200,25 @@ const Greeting = ({ name }) => <div>Hello, {name}!</div>;
 For `<Greeting name="Merek"` />, output:
 Hello, Merek!
 
-- Nested Components: React components can include each other. The output is the combined rendered result of all included components
-- React.useState Hook: Allows you to add state to a functional component. Returns an array: [stateValue, setStateFunction].
+- Nested Components: React components can include each other
 ```
 const Counter = () => {
   const [count, setCount] = useState(0);
   return <button onClick={() => setCount(count + 1)}>{count}</button>;
 };
 ```
-The button updates and displays the count state.
+- React re-renders components when state changes, conditional rendering updates the displayed components dynamically
+- Clicking a button or triggering a state change toggles between rendering different components
+```
+setValue(value + 1);       // uses the current state
+setValue((prev) => prev + 2);  // uses the updated state
+```
+In React, these updates are batched, and the final result reflects the combined updates
 
 - useState: Manage component state
 - useContext: Access and update context values
 - useRef: Access DOM elements or persist values
-- useEffect: Side effects (data fetching, subscriptions) that run after render.
+- useEffect: Side effects (data fetching, subscriptions) that run after render
 - useMemo/useCallback (Performance Hooks): Optimize rendering
 #### React Router
 Allows route-based rendering in React apps, BrowserRouter must wrap routes, Link creates navigable links, and Route defines a component for a particular path
@@ -219,6 +228,21 @@ Eescribes the project, lists dependencies, scripts, and other metadata for a Nod
 fetch(url, options): Performs network requests, returns a promise with a Response. Used in front end JS and can be used in back end Node.js
 #### Node.js
 Node.js runs JavaScript on the server-side and provides a runtime for building scalable applications
+1. Synchronous code
+2. Microtasks (Promises, queueMicrotask)
+3. Macrotasks (Timers, I/O callbacks)
+```
+console.log("Start");
+setTimeout(() => console.log("Timeout"), 0);
+Promise.resolve().then(() => console.log("Promise"));
+console.log("End");
+
+// Output:
+Start
+End
+Promise
+Timeout
+```
 #### PM2
 A production process manager for Node.js applications, helps keep apps running, manage restarts, and load balancing.
 #### Vite
